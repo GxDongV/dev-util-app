@@ -1,0 +1,6 @@
+2025-07-28 17:28:06,786 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 74, in auto_convert_naming
+    if not self.name_converter.validate_input(input_text):
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'name_converter'
