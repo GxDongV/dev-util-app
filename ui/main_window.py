@@ -1,97 +1,107 @@
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton,
-                             QTextEdit, QHBoxLayout, QLabel, QStackedWidget, QRadioButton)
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QTextEdit, QHBoxLayout, QLabel, QStackedWidget, QGroupBox)
 from PyQt5.QtCore import Qt
 from tools.name_converter import NameConverter
+from tools.json_formatter import JsonFormatTool
+from tools.xml_formatter import XmlFormatTool
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.name_converter = NameConverter()  # 确保实例化
         self.init_ui()
 
     def init_ui(self):
-        self.stack.addWidget(self.name_converter)
-        
-        # 输入输出区域
-        layout.addWidget(QLabel('输入文本:'))
-        self.name_input = QTextEdit()
-        layout.addWidget(self.name_input)
-        
-        convert_btn = QPushButton('自动转换')
-        convert_btn.clicked.connect(self.auto_convert_naming)
-        layout.addWidget(convert_btn)
-        
-        layout.addWidget(QLabel('转换结果:'))
-        self.name_output = QTextEdit()
-        self.name_output.setReadOnly(True)
-        layout.addWidget(self.name_output)
-        
-        return widget
+        self.setWindowTitle("开发工具集")
+        self.setGeometry(100, 100, 1000, 700)
 
-    def auto_convert_naming(self):
-        input_text = self.name_input.toPlainText()
-        if not self.name_converter.validate_input(input_text):
-            self.name_output.setPlainText("输入内容不合法")
-            return
+        # 创建中心部件和主布局
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QHBoxLayout(central_widget)
 
-        converted_text, convert_type = self.name_converter.process(input_text)
-        self.name_output.setPlainText(f"{convert_type}\n{converted_text}")
+        # 创建侧边栏
+        sidebar = QWidget()
+        sidebar.setFixedWidth(150)
+        sidebar_layout = QVBoxLayout(sidebar)
 
-    def create_json_interface(self):
+        # 直接添加工具按钮（移除分组框）
+        self.name_convert_btn = QPushButton("命名转换")
+        self.json_format_btn = QPushButton("JSON格式转换")
+        self.xml_format_btn = QPushButton("XML格式转换")
+
+        # 添加按钮到侧边栏
+        sidebar_layout.addWidget(self.name_convert_btn)
+        sidebar_layout.addWidget(self.json_format_btn)
+        sidebar_layout.addWidget(self.xml_format_btn)
+        sidebar_layout.addStretch()
+
+        # 创建主内容区域
+        main_content = QWidget()
+        main_content_layout = QVBoxLayout(main_content)
+
+        # 添加标签显示
+        self.tab_label = QLabel("当前工具: 命名转换")
+        self.tab_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        
+        # 创建顶部水平布局
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(self.tab_label)
+        top_layout.addStretch()  # 右侧添加伸缩空间，将标签推到左侧
+
+        # 创建堆叠窗口
+        self.stack = QStackedWidget()
+
+        # 添加到主内容布局
+        main_content_layout.addLayout(top_layout)
+        main_content_layout.addWidget(self.stack)
+
+        # 初始化所有工具界面
+        self.init_tools()
+
+        # 设置布局比例
+        main_layout.addWidget(sidebar, 1)
+        main_layout.addWidget(main_content, 4)
+
+        # 连接按钮事件
+        self.connect_signals()
+
+    def init_tools(self):
+        """初始化所有工具界面"""
+        # 创建工具实例
+        self.name_converter = NameConverter()
+        self.json_formatter = JsonFormatTool()
+        self.xml_formatter = XmlFormatTool()
+        
+        # 创建额外的工具界面
+        self.xml_convert1 = self.create_generic_interface("XML转换1")
+        
+        # 将所有界面添加到stack
+        self.stack.addWidget(self.name_converter)        # 0: 命名转换
+        self.stack.addWidget(self.json_formatter)        # 1: JSON格式转换
+        self.stack.addWidget(self.xml_formatter)         # 3: XML格式转换
+
+    def create_generic_interface(self, title):
+        """创建通用工具界面"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        
-        # 输入区域
-        layout.addWidget(QLabel('JSON输入:'))
-        self.json_input = QTextEdit()
-        layout.addWidget(self.json_input)
-        
-        # 操作按钮
-        format_btn = QPushButton('格式化')
-        layout.addWidget(format_btn)
-        
-        # 输出区域
-        layout.addWidget(QLabel('格式化结果:'))
-        self.json_output = QTextEdit()
-        self.json_output.setReadOnly(True)
-        layout.addWidget(self.json_output)
-        
+        layout.addWidget(QLabel(f'{title}功能开发中'))
         return widget
 
-    def create_xml_interface(self):
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-        
-        # 输入区域
-        layout.addWidget(QLabel('XML输入:'))
-        self.xml_input = QTextEdit()
-        layout.addWidget(self.xml_input)
-        
-        # 操作按钮
-        format_btn = QPushButton('格式化')
-        layout.addWidget(format_btn)
-        
-        # 输出区域
-        layout.addWidget(QLabel('格式化结果:'))
-        self.xml_output = QTextEdit()
-        self.xml_output.setReadOnly(True)
-        layout.addWidget(self.xml_output)
-        
-        return widget
+    def connect_signals(self):
+        """连接所有按钮信号"""
+        # 更新标签并切换界面的辅助函数
+        def update_and_switch(index, title):
+            self.stack.setCurrentIndex(index)
+            self.tab_label.setText(f"当前工具: {title}")
 
-    def format_json(self):
-        # 后续添加JSON格式化逻辑
-        pass
-
-    def format_xml(self):
-        # 后续添加XML格式化逻辑
-        pass
-
-    def add_tool(self, tool):
-        self.tabs.addTab(tool, tool.name)
+        # 连接按钮事件
+        self.name_convert_btn.clicked.connect(lambda: update_and_switch(0, "命名转换"))
+        self.json_format_btn.clicked.connect(lambda: update_and_switch(1, "JSON格式转换"))
+        self.xml_format_btn.clicked.connect(lambda: update_and_switch(2, "XML格式转换"))
 
 if __name__ == '__main__':
     import sys
+    from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
     window = MainWindow()
+    window.show()
     sys.exit(app.exec_())

@@ -4,3 +4,180 @@ Traceback (most recent call last):
     if not self.name_converter.validate_input(input_text):
            ^^^^^^^^^^^^^^^^^^^
 AttributeError: 'MainWindow' object has no attribute 'name_converter'
+2025-07-29 15:26:14,257 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 9, in __init__
+    self.name_converter = NameConverter()  # 确保实例化
+                          ^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class NameConverter without an implementation for abstract method 'format_content'
+2025-07-29 15:27:02,215 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 9, in __init__
+    self.name_converter = NameConverter()  # 确保实例化
+                          ^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class NameConverter without an implementation for abstract method 'format_content'
+2025-07-29 15:30:48,369 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 9, in __init__
+    self.name_converter = NameConverter()  # 确保实例化
+                          ^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class NameConverter without an implementation for abstract method 'format_content'
+2025-07-29 15:31:46,504 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 9, in __init__
+    self.name_converter = NameConverter()  # 确保实例化
+                          ^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class NameConverter without an implementation for abstract method 'format_content'
+2025-07-29 15:32:18,534 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 13, in init_ui
+    self.stack.addWidget(self.name_converter)
+    ^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'stack'
+2025-07-29 15:35:30,033 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 34, in init_ui
+    return widget
+           ^^^^^^
+NameError: name 'widget' is not defined. Did you mean: 'QWidget'?
+2025-07-29 15:39:30,602 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 45, in init_ui
+    layout.addWidget(QLabel('输入文本:'))
+    ^^^^^^
+NameError: name 'layout' is not defined. Did you mean: 'self.layout'?
+2025-07-29 15:39:52,481 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 45, in init_ui
+    layout.addWidget(QLabel('输入文本:'))
+    ^^^^^^
+NameError: name 'layout' is not defined. Did you mean: 'self.layout'?
+2025-07-29 16:02:10,125 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 54, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 85, in connect_signals
+    self.json_convert_btn.clicked.connect(lambda: self.stack.setCurrentIndex(2))
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'json_convert_btn'. Did you mean: 'json_convert1'?
+2025-07-29 16:02:26,709 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 52, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 83, in connect_signals
+    self.json_convert_btn.clicked.connect(lambda: self.stack.setCurrentIndex(2))
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'json_convert_btn'. Did you mean: 'json_convert1'?
+2025-07-29 16:03:08,294 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 54, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 85, in connect_signals
+    self.json_convert_btn.clicked.connect(lambda: self.stack.setCurrentIndex(2))
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'json_convert_btn'. Did you mean: 'json_convert1'?
+2025-07-29 16:03:33,789 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 54, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 84, in connect_signals
+    self.json_convert_btn.clicked.connect(lambda: self.stack.setCurrentIndex(2))
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'json_convert_btn'. Did you mean: 'name_convert_btn'?
+2025-07-29 16:05:24,630 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 53, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 80, in connect_signals
+    self.json_convert_btn.clicked.connect(lambda: self.stack.setCurrentIndex(1))
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'json_convert_btn'. Did you mean: 'name_convert_btn'?
+2025-07-29 16:14:01,451 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd
+" → "sdaDdd
+"
+2025-07-29 16:14:01,524 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:07,009 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd
+dasd_ooo" → "sdaDdd
+dasdOoo"
+2025-07-29 16:14:07,010 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:12,476 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd
+dasd_ooo
+dslkdmalksjdka_nmasdnmka" → "sdaDdd
+dasdOoo
+dslkdmalksjdkaNmasdnmka"
+2025-07-29 16:14:12,477 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:17,142 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd" → "sdaDdd"
+2025-07-29 16:14:17,142 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:17,794 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd" → "sdaDdd"
+2025-07-29 16:14:17,794 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:17,981 - tools.name_converter - INFO - 转换下划线命名: "sda_ddd" → "sdaDdd"
+2025-07-29 16:14:17,981 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:14:23,997 - tools.name_converter - INFO - 转换驼峰命名: "sdaDdd" → "sda_ddd"
+2025-07-29 16:14:23,997 - tools.name_converter - INFO - 格式化成功: 驼峰 → 下划线
+2025-07-29 16:14:30,395 - tools.name_converter - INFO - 转换驼峰命名: "sdaDdd
+asdasdDasfDfsa" → "sda_ddd
+asdasd_dasf_dfsa"
+2025-07-29 16:14:30,396 - tools.name_converter - INFO - 格式化成功: 驼峰 → 下划线
+2025-07-29 16:14:37,752 - tools.name_converter - INFO - 转换驼峰命名: "sdaDdd
+asdasdDasfDfsa
+asdasd_dasd_asd" → "sda_ddd
+asdasd_dasf_dfsa
+asdasd_dasd_asd"
+2025-07-29 16:14:37,752 - tools.name_converter - INFO - 格式化成功: 驼峰 → 下划线

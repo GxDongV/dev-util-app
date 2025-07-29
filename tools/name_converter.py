@@ -39,3 +39,13 @@ class NameConverter(BaseTool):
 
     def get_errors(self) -> list:
         return []
+
+    def format_content(self):
+        try:
+            input_text = self.input_area.toPlainText()
+            result, msg = self.process(input_text)
+            self.output_area.setPlainText(result)
+            logger.info(f'格式化成功: {msg}')
+        except Exception as e:
+            logger.error(f'格式化失败: {str(e)}')
+            self.output_area.setPlainText(f'错误: {str(e)}')
