@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QTextEdit, QHBoxLayout, QLabel, QStackedWidget, QGroupBox)
 from PyQt5.QtCore import Qt
 from tools.name_converter import NameConverter
-from tools.json_formatter import JsonFormatTool
-from tools.xml_formatter import XmlFormatTool
+from tools.json_formatter import JsonFormatter
+from tools.xml_formatter import XmlFormatter
+from tools.base64_converter import Base64Converter
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,11 +28,12 @@ class MainWindow(QMainWindow):
         self.name_convert_btn = QPushButton("命名转换")
         self.json_format_btn = QPushButton("JSON格式转换")
         self.xml_format_btn = QPushButton("XML格式转换")
-
+        self.base64_converter_btn = QPushButton("Base64转换")
         # 添加按钮到侧边栏
         sidebar_layout.addWidget(self.name_convert_btn)
         sidebar_layout.addWidget(self.json_format_btn)
         sidebar_layout.addWidget(self.xml_format_btn)
+        sidebar_layout.addWidget(self.base64_converter_btn)
         sidebar_layout.addStretch()
 
         # 创建主内容区域
@@ -65,18 +67,16 @@ class MainWindow(QMainWindow):
         self.connect_signals()
 
     def init_tools(self):
-        """初始化所有工具界面"""
-        # 创建工具实例
+        # 初始化所有工具界面
         self.name_converter = NameConverter()
-        self.json_formatter = JsonFormatTool()
-        self.xml_formatter = XmlFormatTool()
-
-        
-        # 将所有界面添加到stack
-        self.stack.addWidget(self.name_converter)        # 0: 命名转换
-        self.stack.addWidget(self.json_formatter)        # 1: JSON格式转换
-        self.stack.addWidget(self.xml_formatter)         # 3: XML格式转换
-
+        self.json_formatter = JsonFormatter()
+        self.xml_formatter = XmlFormatter()
+        self.base64_converter = Base64Converter()
+        # 添加工具界面到stack
+        self.stack.addWidget(self.name_converter)
+        self.stack.addWidget(self.json_formatter)
+        self.stack.addWidget(self.xml_formatter)
+        self.stack.addWidget(self.base64_converter)
     def create_generic_interface(self, title):
         """创建通用工具界面"""
         widget = QWidget()
@@ -95,6 +95,7 @@ class MainWindow(QMainWindow):
         self.name_convert_btn.clicked.connect(lambda: update_and_switch(0, "命名转换"))
         self.json_format_btn.clicked.connect(lambda: update_and_switch(1, "JSON格式转换"))
         self.xml_format_btn.clicked.connect(lambda: update_and_switch(2, "XML格式转换"))
+        self.base64_converter_btn.clicked.connect(lambda: update_and_switch(3, "base64转换"))
 
 if __name__ == '__main__':
     import sys

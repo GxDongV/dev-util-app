@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget
 from .base_tool import BaseTool
 import json
-class JsonFormatTool(BaseTool):
+class JsonFormatter(BaseTool):
     def __init__(self):
         super().__init__("JSON转换工具")
 

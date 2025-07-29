@@ -32,7 +32,7 @@ devUtilApp/
    ```
    pip install -r requirements.txt
    ```
-
+Pip install qdarkstyle
 ## 使用方法
 运行主程序：
 ```

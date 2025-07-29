@@ -287,3 +287,101 @@ agfasfg_jkids,"
 2025-07-29 17:04:26,756 - tools.name_converter - INFO - 转换成功: 无需转换
 2025-07-29 17:04:26,944 - tools.name_converter - INFO - 转换成功: 无需转换
 2025-07-29 17:04:28,519 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:14:10,903 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 59, in init_ui
+    self.init_tools()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 73, in init_tools
+    self.base64_converter = Base64Converter()
+                            ^^^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class Base64Converter without an implementation for abstract method 'format_content'
+2025-07-29 17:14:44,122 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 59, in init_ui
+    self.init_tools()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 73, in init_tools
+    self.base64_converter = Base64Converter()
+                            ^^^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class Base64Converter without an implementation for abstract method 'format_content'
+2025-07-29 17:15:47,931 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 59, in init_ui
+    self.init_tools()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 73, in init_tools
+    self.base64_converter = Base64Converter()
+                            ^^^^^^^^^^^^^^^^^
+TypeError: Can't instantiate abstract class Base64Converter without an implementation for abstract method 'format_content'
+2025-07-29 17:18:01,723 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 66, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 110, in connect_signals
+    self.other_group.setLayout(other_group_layout)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'other_group'
+2025-07-29 17:20:49,413 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 67, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 100, in connect_signals
+    self.base64_converter.clicked.connect(lambda: update_and_switch(3, "base64转换"))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Base64Converter' object has no attribute 'clicked'
+2025-07-29 17:21:57,382 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 67, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 98, in connect_signals
+    self.base64_converter.clicked.connect(lambda: update_and_switch(3, "base64转换"))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Base64Converter' object has no attribute 'clicked'
+2025-07-29 17:22:18,822 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 11, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 67, in init_ui
+    self.connect_signals()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 98, in connect_signals
+    self.base64_converter.clicked.connect(lambda: update_and_switch(3, "base64转换"))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Base64Converter' object has no attribute 'clicked'
+2025-07-29 17:22:33,097 - tools.base64_converter - INFO - Base64编码成功
+2025-07-29 17:22:36,248 - tools.base64_converter - INFO - Base64解码成功
+2025-07-29 17:22:42,870 - tools.base64_converter - INFO - Base64编码成功
+2025-07-29 17:22:47,699 - tools.base64_converter - INFO - Base64解码成功
+2025-07-29 17:42:00,610 - qdarkstyle - INFO - QSS file successfully loaded.
+2025-07-29 17:42:00,660 - qdarkstyle - INFO - Found version patches to be applied.
+2025-07-29 17:42:00,669 - qdarkstyle - INFO - Found application patches to be applied.
