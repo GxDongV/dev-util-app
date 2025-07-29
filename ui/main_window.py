@@ -70,9 +70,7 @@ class MainWindow(QMainWindow):
         self.name_converter = NameConverter()
         self.json_formatter = JsonFormatTool()
         self.xml_formatter = XmlFormatTool()
-        
-        # 创建额外的工具界面
-        self.xml_convert1 = self.create_generic_interface("XML转换1")
+
         
         # 将所有界面添加到stack
         self.stack.addWidget(self.name_converter)        # 0: 命名转换

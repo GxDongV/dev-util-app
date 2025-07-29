@@ -1,13 +1,50 @@
-import logging
+# tools/name_converter.py
 
+import logging
 from .base_tool import BaseTool
 import re
+from PyQt5.QtWidgets import QWidget, QTextEdit, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
 
 logger = logging.getLogger(__name__)
+
 
 class NameConverter(BaseTool):
     def __init__(self):
         super().__init__('命名格式转换器')
+
+        # 创建输入输出框
+        self.input_text = QTextEdit()
+        self.output_area = QTextEdit()
+        self.output_area.setReadOnly(True)
+
+        # 创建按钮
+        self.convert_btn = QPushButton("变量转换")
+        self.convert_btn.clicked.connect(self.convert_name)
+
+        self.case_btn = QPushButton("大小写转换")
+        self.case_btn.clicked.connect(self.toggle_case)
+
+        # 创建按钮布局
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(10)  # 设置按钮间距
+
+        # 添加按钮到布局
+        button_layout.addWidget(self.convert_btn)
+        button_layout.addWidget(self.case_btn)
+
+        # 确保布局有足够空间显示所有按钮
+        button_layout.addStretch(1)
+
+        # 创建主布局并添加所有部件
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(QLabel("输入文本:"))
+        main_layout.addWidget(self.input_text)
+        main_layout.addLayout(button_layout)
+        main_layout.addWidget(QLabel("转换结果:"))
+        main_layout.addWidget(self.output_area)
+
+        # 设置主布局
+        self.setLayout(main_layout)
 
     def process(self, text: str) -> tuple:
         '''自动检测并转换命名格式'''
@@ -41,11 +78,50 @@ class NameConverter(BaseTool):
         return []
 
     def format_content(self):
+        """
+        修复：使用正确的属性名 self.input_text 而不是 self.input_area
+        """
         try:
-            input_text = self.input_area.toPlainText()
+            input_text = self.input_text.toPlainText()  # 修复：使用 input_text
             result, msg = self.process(input_text)
-            self.output_area.setPlainText(result)
+            self.output_area.setPlainText(result)  # 保持 output_area 不变
             logger.info(f'格式化成功: {msg}')
         except Exception as e:
             logger.error(f'格式化失败: {str(e)}')
+            self.output_area.setPlainText(f'错误: {str(e)}')
+
+    def toggle_case(self):
+        """切换文本大小写"""
+        input_text = self.input_text.toPlainText()
+        if not input_text:
+            return
+
+        # 判断当前文本主要大小写状态
+        has_lower = any(c.islower() for c in input_text)
+        has_upper = any(c.isupper() for c in input_text)
+
+        if has_lower and has_upper:
+            # 混合大小写时转为小写
+            result = input_text.lower()
+        elif has_lower:
+            # 全小写转为大写
+            result = input_text.upper()
+        else:
+            # 全大写转为小写
+            result = input_text.lower()
+
+        self.input_text.setPlainText(result)
+
+    def convert_name(self):
+        """转换变量名格式"""
+        input_text = self.input_text.toPlainText()
+        if not input_text:
+            return
+
+        try:
+            result, msg = self.process(input_text)
+            self.output_area.setPlainText(result)
+            logger.info(f'转换成功: {msg}')
+        except Exception as e:
+            logger.error(f'转换失败: {str(e)}')
             self.output_area.setPlainText(f'错误: {str(e)}')

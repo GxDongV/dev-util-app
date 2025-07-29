@@ -1,15 +1,65 @@
 # tools/json_format.py
-import json
+from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget
 from .base_tool import BaseTool
-
+import json
 class JsonFormatTool(BaseTool):
     def __init__(self):
-        super().__init__("JSON 格式化")
+        super().__init__("JSON转换工具")
+
+    def init_ui(self):
+        """
+        重写init_ui方法，创建独立的UI布局
+        """
+        layout = QVBoxLayout()
+
+        # 创建水平布局用于分开展示
+        h_layout = QHBoxLayout()
+
+        # 左侧输入区域
+        self.input_area = QTextEdit()
+        self.input_area.setPlaceholderText("请输入JSON内容...")
+        h_layout.addWidget(self.input_area)
+
+        # 右侧输出区域
+        self.output_area = QTextEdit()
+        self.output_area.setReadOnly(True)
+        self.output_area.setPlaceholderText("转换结果将显示在这里...")
+        h_layout.addWidget(self.output_area)
+
+        layout.addLayout(h_layout)
+
+        # 转换按钮
+        self.convert_btn = QPushButton("格式化JSON")
+        self.convert_btn.clicked.connect(self.format_content)
+        layout.addWidget(self.convert_btn)
+
+        self.setLayout(layout)
 
     def format_content(self):
+        """
+        实现JSON格式化逻辑
+        """
+        input_text = self.input_area.toPlainText()
+        if not input_text.strip():
+            self.output_area.setPlainText("请输入JSON内容")
+            return
+
         try:
-            data = json.loads(self.input_area.toPlainText())
-            formatted = json.dumps(data, indent=2, ensure_ascii=False)
-            self.output_area.setText(formatted)
+            # 解析并格式化JSON
+            parsed_json = json.loads(input_text)
+            formatted_json = json.dumps(parsed_json, indent=4, ensure_ascii=False)
+            self.output_area.setPlainText(formatted_json)
         except json.JSONDecodeError as e:
-            self.output_area.setText(f"JSON 解析失败: {e}")
+            self.output_area.setPlainText(f"JSON格式错误: {str(e)}")
+        except Exception as e:
+            self.output_area.setPlainText(f"处理错误: {str(e)}")
+
+    def process(self, text: str):
+        """
+        实现BaseTool的抽象方法
+        """
+        try:
+            parsed = json.loads(text)
+            return json.dumps(parsed, indent=4, ensure_ascii=False)
+        except Exception as e:
+            return f"处理出错: {str(e)}"

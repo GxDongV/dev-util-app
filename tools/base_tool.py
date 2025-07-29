@@ -19,17 +19,18 @@ class BaseTool(QWidget, metaclass=Meta):
         self.init_ui()
 
     def init_ui(self):
-        layout = QVBoxLayout()
-        self.input_area = QTextEdit()
-        self.output_area = QTextEdit()
-        self.output_area.setReadOnly(True)
-        self.format_btn = QPushButton("格式化")
-        self.format_btn.clicked.connect(self.format_content)
-
-        layout.addWidget(self.input_area)
-        layout.addWidget(self.format_btn)
-        layout.addWidget(self.output_area)
-        self.setLayout(layout)
+        # layout = QVBoxLayout()
+        # self.input_area = QTextEdit()
+        # self.output_area = QTextEdit()
+        # self.output_area.setReadOnly(True)
+        # self.format_btn = QPushButton("格式化")
+        # self.format_btn.clicked.connect(self.format_content)
+        #
+        # layout.addWidget(self.input_area)
+        # layout.addWidget(self.format_btn)
+        # layout.addWidget(self.output_area)
+        # self.setLayout(layout)
+        pass
 
     @abstractmethod
     def format_content(self):

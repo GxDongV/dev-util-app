@@ -181,3 +181,109 @@ asdasd_dasd_asd" → "sda_ddd
 asdasd_dasf_dfsa
 asdasd_dasd_asd"
 2025-07-29 16:14:37,752 - tools.name_converter - INFO - 格式化成功: 驼峰 → 下划线
+2025-07-29 16:23:13,598 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 58, in init_ui
+    self.init_tools()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 70, in init_tools
+    self.name_converter = NameConverter()
+                          ^^^^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\tools\name_converter.py", line 13, in __init__
+    self.input_text = QTextEdit()
+                      ^^^^^^^^^
+NameError: name 'QTextEdit' is not defined
+2025-07-29 16:24:42,430 - __main__ - CRITICAL - 未捕获异常
+Traceback (most recent call last):
+  File "D:\work\python\devUtilsApp\main.py", line 24, in <module>
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 10, in __init__
+    self.init_ui()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 58, in init_ui
+    self.init_tools()
+  File "D:\work\python\devUtilsApp\ui\main_window.py", line 70, in init_tools
+    self.name_converter = NameConverter()
+                          ^^^^^^^^^^^^^^^
+  File "D:\work\python\devUtilsApp\tools\name_converter.py", line 13, in __init__
+    self.input_text = QTextEdit()
+                      ^^^^^^^^^
+NameError: name 'QTextEdit' is not defined
+2025-07-29 16:26:00,526 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:26:03,730 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:26:03,926 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:30:14,723 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:30:15,421 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:33:57,864 - tools.name_converter - INFO - 转换下划线命名: "sss_ddd" → "sssDdd"
+2025-07-29 16:33:57,864 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:34:00,113 - tools.name_converter - INFO - 转换下划线命名: "sss_ddd" → "sssDdd"
+2025-07-29 16:34:00,113 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:34:04,546 - tools.name_converter - INFO - 转换下划线命名: "sss_ddd" → "sssDdd"
+2025-07-29 16:34:04,547 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:34:17,709 - tools.name_converter - INFO - 转换下划线命名: "sss_ddd" → "sssDdd"
+2025-07-29 16:34:17,709 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:34:30,610 - tools.name_converter - INFO - 转换下划线命名: "sss_ddd" → "sssDdd"
+2025-07-29 16:34:30,610 - tools.name_converter - INFO - 格式化成功: 下划线 → 驼峰
+2025-07-29 16:36:19,506 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:36:19,686 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 16:49:14,421 - tools.name_converter - INFO - 格式化成功: 无需转换
+2025-07-29 17:03:55,653 - tools.name_converter - INFO - 转换下划线命名: "aws_das" → "awsDas"
+2025-07-29 17:03:55,653 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:03:56,785 - tools.name_converter - INFO - 转换下划线命名: "aws_das" → "awsDas"
+2025-07-29 17:03:56,785 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:03:57,273 - tools.name_converter - INFO - 转换下划线命名: "aws_das" → "awsDas"
+2025-07-29 17:03:57,274 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:03:57,423 - tools.name_converter - INFO - 转换下划线命名: "aws_das" → "awsDas"
+2025-07-29 17:03:57,423 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:07,106 - tools.name_converter - INFO - 转换下划线命名: "aws_das
+ffasf_das
+agfasfg_jkids" → "awsDas
+ffasfDas
+agfasfgJkids"
+2025-07-29 17:04:07,106 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:07,892 - tools.name_converter - INFO - 转换下划线命名: "aws_das
+ffasf_das
+agfasfg_jkids" → "awsDas
+ffasfDas
+agfasfgJkids"
+2025-07-29 17:04:07,893 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:08,058 - tools.name_converter - INFO - 转换下划线命名: "aws_das
+ffasf_das
+agfasfg_jkids" → "awsDas
+ffasfDas
+agfasfgJkids"
+2025-07-29 17:04:08,058 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:08,239 - tools.name_converter - INFO - 转换下划线命名: "aws_das
+ffasf_das
+agfasfg_jkids" → "awsDas
+ffasfDas
+agfasfgJkids"
+2025-07-29 17:04:08,239 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:08,434 - tools.name_converter - INFO - 转换下划线命名: "aws_das
+ffasf_das
+agfasfg_jkids" → "awsDas
+ffasfDas
+agfasfgJkids"
+2025-07-29 17:04:08,434 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:13,806 - tools.name_converter - INFO - 转换下划线命名: "aws_das,
+ffasf_das,
+agfasfg_jkids," → "awsDas,
+ffasfDas,
+agfasfgJkids,"
+2025-07-29 17:04:13,806 - tools.name_converter - INFO - 转换成功: 下划线 → 驼峰
+2025-07-29 17:04:20,943 - tools.name_converter - INFO - 转换驼峰命名: "awsDas,
+ffasfDas,
+agfasfgJkids," → "aws_das,
+ffasf_das,
+agfasfg_jkids,"
+2025-07-29 17:04:20,944 - tools.name_converter - INFO - 转换成功: 驼峰 → 下划线
+2025-07-29 17:04:25,181 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:04:25,970 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:04:26,486 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:04:26,756 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:04:26,944 - tools.name_converter - INFO - 转换成功: 无需转换
+2025-07-29 17:04:28,519 - tools.name_converter - INFO - 转换成功: 无需转换
