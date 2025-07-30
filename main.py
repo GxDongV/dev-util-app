@@ -5,6 +5,7 @@ import logging
 from ui.main_window import MainWindow
 from PyQt5.QtWidgets import QApplication
 import qdarkstyle
+from qdarkstyle.dark.palette import DarkPalette
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ if __name__ == "__main__":
     sys.excepthook = excepthook
     app = QApplication(sys.argv)
     # 默认加载深色主题
-    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    app.setStyleSheet(qdarkstyle.load_stylesheet(palette=DarkPalette))
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

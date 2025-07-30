@@ -5,6 +5,9 @@ from tools.json_formatter import JsonFormatter
 from tools.xml_formatter import XmlFormatter
 from tools.base64_converter import Base64Converter
 import qdarkstyle
+from qdarkstyle.light.palette import LightPalette
+from qdarkstyle.dark.palette import DarkPalette
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -92,10 +95,7 @@ class MainWindow(QMainWindow):
     def toggle_theme(self):
         """切换主题"""
         app = QApplication.instance()
-        import qdarkstyle
-        from qdarkstyle.light.palette import LightPalette
-        from qdarkstyle.dark.palette import DarkPalette
-
+        
         if self.is_dark_theme:
             # 切换到浅色主题
             app.setStyleSheet(qdarkstyle.load_stylesheet(palette=LightPalette))
@@ -126,11 +126,3 @@ class MainWindow(QMainWindow):
         self.json_format_btn.clicked.connect(lambda: update_and_switch(1, "JSON格式转换"))
         self.xml_format_btn.clicked.connect(lambda: update_and_switch(2, "XML格式转换"))
         self.base64_converter_btn.clicked.connect(lambda: update_and_switch(3, "Base64转换"))
-
-if __name__ == '__main__':
-    import sys
-    from PyQt5.QtWidgets import QApplication
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
