@@ -51,11 +51,11 @@ class Base64Converter(BaseTool):
 
     def show_input_context_menu(self, position):
         """显示输入框的右键菜单"""
-        TextContextMenu.show_context_menu(self.input_text, position)
+        TextContextMenu.show_context_menu(self.input_text, position, self.find_manager)
 
     def show_output_context_menu(self, position):
         """显示输出框的右键菜单"""
-        TextContextMenu.show_context_menu(self.output_area, position)
+        TextContextMenu.show_context_menu(self.output_area, position, self.find_manager)
         
     def keyPressEvent(self, event):
         """处理键盘事件"""

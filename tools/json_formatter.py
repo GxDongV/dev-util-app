@@ -121,7 +121,7 @@ class JsonFormatter(BaseTool):
         
     def show_text_context_menu(self, position):
         """显示文本编辑区域的右键菜单"""
-        TextContextMenu.show_context_menu(self.input_area, position)
+        TextContextMenu.show_context_menu(self.input_area, position, self.find_manager)
         
     def keyPressEvent(self, event):
         """处理键盘事件"""

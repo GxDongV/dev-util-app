@@ -10,7 +10,7 @@ class TextContextMenu:
     """文本框右键菜单处理器"""
     
     @staticmethod
-    def show_context_menu(text_edit, position):
+    def show_context_menu(text_edit, position, find_manager=None):
         """显示文本编辑器的自定义中文右键菜单"""
         menu = QMenu()
         
@@ -52,5 +52,12 @@ class TextContextMenu:
         select_all_action = QAction("全选", text_edit)
         select_all_action.triggered.connect(text_edit.selectAll)
         menu.addAction(select_all_action)
+        
+        # 如果提供了查找管理器，则添加查找功能
+        if find_manager:
+            menu.addSeparator()
+            find_action = QAction("查找", text_edit)
+            find_action.triggered.connect(lambda: find_manager.show_find_dialog(text_edit))
+            menu.addAction(find_action)
         
         menu.exec_(text_edit.mapToGlobal(position))
