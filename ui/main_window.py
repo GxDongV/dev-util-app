@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QTextEdit, QHBoxLayout, QLabel, QStackedWidget, QGroupBox, QApplication)
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from tools.name_converter import NameConverter
 from tools.json_formatter import JsonFormatter
 from tools.xml_formatter import XmlFormatter
@@ -8,6 +9,13 @@ from tools.text_statistics import TextStatistics
 import qdarkstyle
 from qdarkstyle.light.palette import LightPalette
 from qdarkstyle.dark.palette import DarkPalette
+import os
+import sys
+
+def get_resource_path(relative_path):
+    """获取资源文件的绝对路径"""
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,6 +26,9 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("开发工具集")
         self.setGeometry(100, 100, 1000, 700)
         self.is_dark_theme = True  # 默认使用暗色主题
+
+        # 设置窗口图标
+        self.set_window_icon()
 
         # 创建中心部件和主布局
         central_widget = QWidget()
@@ -83,6 +94,21 @@ class MainWindow(QMainWindow):
         # 连接按钮事件
         self.connect_signals()
 
+    def set_window_icon(self):
+        """设置窗口图标"""
+        # 尝试在开发环境中查找图标
+        icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources", "app_icon.ico")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+        else:
+            # 尝试在打包后的资源目录中查找
+            try:
+                packed_icon_path = get_resource_path("resources/app_icon.ico")
+                if os.path.exists(packed_icon_path):
+                    self.setWindowIcon(QIcon(packed_icon_path))
+            except Exception:
+                pass  # 如果找不到图标文件，则使用默认图标
+
     def init_tools(self):
         # 初始化所有工具界面
         self.name_converter = NameConverter()
@@ -106,11 +132,34 @@ class MainWindow(QMainWindow):
             app.setStyleSheet(qdarkstyle.load_stylesheet(palette=LightPalette))
             self.theme_toggle_btn.setText("切换到暗色主题")
             self.is_dark_theme = False
+            # 更新窗口标题栏颜色（尝试使用QSS）
+            self.update_title_bar_color(light=True)
         else:
             # 切换到暗色主题
             app.setStyleSheet(qdarkstyle.load_stylesheet(palette=DarkPalette))
             self.theme_toggle_btn.setText("切换到浅色主题")
             self.is_dark_theme = True
+            # 更新窗口标题栏颜色（尝试使用QSS）
+            self.update_title_bar_color(light=False)
+
+    def update_title_bar_color(self, light=True):
+        """更新窗口标题栏颜色"""
+        if light:
+            title_bar_style = """
+                QMainWindow::title {
+                    background-color: #f0f0f0; /* 浅色背景 */
+                    color: #333; /* 深色文字 */
+                }
+            """
+        else:
+            title_bar_style = """
+                QMainWindow::title {
+                    background-color: #333; /* 深色背景 */
+                    color: #f0f0f0; /* 浅色文字 */
+                }
+            """
+        # 应用样式表
+        self.setStyleSheet(title_bar_style)
 
     def create_generic_interface(self, title):
         """创建通用工具界面"""

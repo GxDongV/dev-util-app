@@ -8,19 +8,20 @@ def build_exe():
     """
     # 获取当前目录
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    #         "--onedir",              # 打包成文件夹形式
-    #         "--onefile",              # 打包成单文件形式
+    
     # 构建命令
     cmd = [
         "pyinstaller",
         "--noconfirm",           # 不需要确认
         "--onefile",              # 打包成单文件形式
         "--windowed",            # 窗口模式，不显示控制台
-        "--hidden-import=qdarkstyle", # 隐藏导入的模块
-        "--hidden-import=qdarkstyle.dark.palette",  # 添加qdarkstyle.dark.palette模块
+        "--hidden-import=qdarkstyle",
+        "--hidden-import=qdarkstyle.dark.palette",
         "--hidden-import=qdarkstyle.light.palette",
         "--add-data", "ui;ui",   # 添加ui目录
         "--add-data", "tools;tools",  # 添加tools目录
+        "--add-data", "resources;resources",  # 添加图标资源目录
+        "--icon", "resources/app_icon.ico",  # 设置exe图标
         "main.py"
     ]
     

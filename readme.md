@@ -29,13 +29,25 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## 设置应用程序图标
+
+1. 创建应用程序图标文件：
+   - 准备一个ICO格式的图标文件，命名为 `app_icon.ico`
+   - 推荐尺寸包括：16x16, 32x32, 48x48, 64x64, 128x128, 256x256
+   - 将图标文件放置在 `resources` 目录中
+
+2. （可选）准备一个PNG格式的图标文件用于界面显示：
+   - 命名为 `app_icon.png`
+   - 推荐尺寸：64x64 或 128x128
+   - 将图标文件放置在 `resources` 目录中
+
 ## 打包为exe可执行文件
 
 ### 方法一：使用PyInstaller命令（推荐）
 
 ```bash
 pip install pyinstaller
-pyinstaller --noconfirm --onedir --windowed --hidden-import=qdarkstyle --hidden-import=qdarkstyle.dark.palette --hidden-import=qdarkstyle.light.palette --add-data "ui;ui" --add-data "tools;tools" main.py
+pyinstaller --noconfirm --onedir --windowed --hidden-import=qdarkstyle --hidden-import=qdarkstyle.dark.palette --hidden-import=qdarkstyle.light.palette --add-data "ui;ui" --add-data "tools;tools" --add-data "resources;resources" --icon "resources/app_icon.ico" main.py
 ```
 
 打包完成后，可执行文件位于 `dist/main/main.exe`
@@ -54,6 +66,9 @@ devUtilsApp/
 ├── requirements.txt     # 依赖文件
 ├── readme.md            # 说明文档
 ├── build_exe.py         # 打包脚本
+├── resources/           # 资源文件目录
+│   ├── app_icon.ico     # 应用程序图标文件
+│   └── README.md        # 资源文件说明
 ├── ui/                  # 界面模块
 │   └── main_window.py   # 主窗口
 ├── tools/               # 工具模块
@@ -96,3 +111,4 @@ devUtilsApp/
 - 打包后的程序会生成一个文件夹，包含exe文件和依赖文件
 - 如需单独的exe文件（无文件夹），可使用 `--onefile` 参数替换 `--onedir`
 - 打包为单个exe文件启动较慢，但分发更简单
+- 图标文件必须是ICO格式才能在Windows上正确显示

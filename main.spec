@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('ui', 'ui'), ('tools', 'tools')],
+    datas=[('ui', 'ui'), ('tools', 'tools'), ('resources', 'resources')],
     hiddenimports=['qdarkstyle', 'qdarkstyle.dark.palette', 'qdarkstyle.light.palette'],
     hookspath=[],
     hooksconfig={},
@@ -35,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['resources\\app_icon.ico'],
 )
