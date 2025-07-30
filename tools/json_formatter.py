@@ -1,5 +1,5 @@
 # tools/json_formatter.py
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication
+from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from .base_tool import BaseTool
@@ -60,7 +60,7 @@ class JsonFormatter(BaseTool):
         """
         input_text = self.input_area.toPlainText()
         if not input_text.strip():
-            self.input_area.setPlainText("请输入JSON内容")
+            QMessageBox.warning(self, "输入错误", "请输入JSON内容")
             return
 
         try:
@@ -72,9 +72,9 @@ class JsonFormatter(BaseTool):
             # 更新树形视图
             self.update_tree_view(parsed_json)
         except json.JSONDecodeError as e:
-            self.input_area.setPlainText(f"JSON格式错误: {str(e)}")
+            QMessageBox.warning(self, "格式错误", f"请输入正确的JSON格式\n错误信息: {str(e)}")
         except Exception as e:
-            self.input_area.setPlainText(f"处理错误: {str(e)}")
+            QMessageBox.warning(self, "处理错误", f"处理出错: {str(e)}")
 
     def update_tree_view(self, data):
         """

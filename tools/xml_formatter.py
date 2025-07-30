@@ -1,5 +1,5 @@
 # tools/xml_formatter.py
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication
+from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from .base_tool import BaseTool
@@ -61,7 +61,7 @@ class XmlFormatter(BaseTool):
         """
         input_text = self.input_area.toPlainText()
         if not input_text.strip():
-            self.input_area.setPlainText("请输入XML内容")
+            QMessageBox.warning(self, "输入错误", "请输入XML内容")
             return
 
         try:
@@ -76,7 +76,7 @@ class XmlFormatter(BaseTool):
             # 更新树形视图
             self.update_tree_view(input_text)
         except Exception as e:
-            self.input_area.setPlainText(f"XML格式错误: {str(e)}")
+            QMessageBox.warning(self, "格式错误", f"请输入正确的XML格式\n错误信息: {str(e)}")
 
     def update_tree_view(self, xml_text):
         """

@@ -30,9 +30,9 @@ class Base64Converter(BaseTool):
         
         # 创建主布局并添加所有部件
         main_layout = QVBoxLayout()
-        main_layout.addWidget(QLabel("输入文本:"))
-        main_layout.addWidget(self.input_text)
         main_layout.addLayout(button_layout)
+        main_layout.addWidget(QLabel("输入内容:"))
+        main_layout.addWidget(self.input_text)
         main_layout.addWidget(QLabel("处理结果:"))
         main_layout.addWidget(self.output_area)
         

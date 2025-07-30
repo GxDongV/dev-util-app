@@ -18,11 +18,14 @@ class NameConverter(BaseTool):
         self.output_area.setReadOnly(True)
 
         # 创建按钮
-        self.convert_btn = QPushButton("变量转换")
+        self.convert_btn = QPushButton("驼峰转换")
         self.convert_btn.clicked.connect(self.convert_name)
 
         self.case_btn = QPushButton("大小写转换")
         self.case_btn.clicked.connect(self.toggle_case)
+
+        self.pascal_btn = QPushButton("帕斯卡命名法")
+        self.pascal_btn.clicked.connect(self.convert_to_pascal)
 
         # 创建按钮布局
         button_layout = QHBoxLayout()
@@ -31,15 +34,16 @@ class NameConverter(BaseTool):
         # 添加按钮到布局
         button_layout.addWidget(self.convert_btn)
         button_layout.addWidget(self.case_btn)
+        button_layout.addWidget(self.pascal_btn)
 
         # 确保布局有足够空间显示所有按钮
         button_layout.addStretch(1)
 
         # 创建主布局并添加所有部件
         main_layout = QVBoxLayout()
+        main_layout.addLayout(button_layout)
         main_layout.addWidget(QLabel("输入文本:"))
         main_layout.addWidget(self.input_text)
-        main_layout.addLayout(button_layout)
         main_layout.addWidget(QLabel("转换结果:"))
         main_layout.addWidget(self.output_area)
 
@@ -70,6 +74,22 @@ class NameConverter(BaseTool):
         '''userName → user_name'''
         text = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', text)
         return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', text).lower()
+
+    def _to_pascal(self, text: str) -> str:
+        '''将文本转换为帕斯卡命名法 (PascalCase)'''
+        # 移除多余的空白字符并按行分割
+        lines = text.strip().split('\n')
+        pascal_results = []
+        
+        for line in lines:
+            # 移除行内多余的空白字符，按非字母数字字符分割
+            words = re.findall(r'[a-zA-Z0-9]+', line)
+            if words:
+                # 将每个单词首字母大写并连接
+                pascal_case = ''.join(word.capitalize() for word in words)
+                pascal_results.append(pascal_case)
+        
+        return '\n'.join(pascal_results)
 
     def validate_input(self, text: str) -> bool:
         return bool(text.strip())
@@ -124,4 +144,18 @@ class NameConverter(BaseTool):
             logger.info(f'转换成功: {msg}')
         except Exception as e:
             logger.error(f'转换失败: {str(e)}')
+            self.output_area.setPlainText(f'错误: {str(e)}')
+
+    def convert_to_pascal(self):
+        """将输入文本转换为帕斯卡命名法"""
+        input_text = self.input_text.toPlainText()
+        if not input_text:
+            return
+
+        try:
+            result = self._to_pascal(input_text)
+            self.output_area.setPlainText(result)
+            logger.info('帕斯卡命名转换成功')
+        except Exception as e:
+            logger.error(f'帕斯卡命名转换失败: {str(e)}')
             self.output_area.setPlainText(f'错误: {str(e)}')
