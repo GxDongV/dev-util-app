@@ -20,8 +20,8 @@ if __name__ == "__main__":
         handlers=[logging.FileHandler('app.log'), logging.StreamHandler()]
     )
     sys.excepthook = excepthook
-    
     app = QApplication(sys.argv)
+    # 默认加载深色主题
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     window = MainWindow()
     window.show()
