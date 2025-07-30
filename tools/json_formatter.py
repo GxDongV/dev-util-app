@@ -1,37 +1,56 @@
-# tools/json_format.py
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget
+# tools/json_formatter.py
+from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 from .base_tool import BaseTool
 import json
+
 class JsonFormatter(BaseTool):
     def __init__(self):
-        super().__init__("JSON转换工具")
+        super().__init__("JSON编辑器")
 
     def init_ui(self):
         """
         重写init_ui方法，创建独立的UI布局
         """
         layout = QVBoxLayout()
-
-        # 创建水平布局用于分开展示
-        h_layout = QHBoxLayout()
-
-        # 左侧输入区域
-        self.input_area = QTextEdit()
-        self.input_area.setPlaceholderText("请输入JSON内容...")
-        h_layout.addWidget(self.input_area)
-
-        # 右侧输出区域
-        self.output_area = QTextEdit()
-        self.output_area.setReadOnly(True)
-        self.output_area.setPlaceholderText("转换结果将显示在这里...")
-        h_layout.addWidget(self.output_area)
-
-        layout.addLayout(h_layout)
-
-        # 转换按钮
+        
+        # 创建水平布局用于放置按钮在左上角
+        button_layout = QHBoxLayout()
         self.convert_btn = QPushButton("格式化JSON")
         self.convert_btn.clicked.connect(self.format_content)
-        layout.addWidget(self.convert_btn)
+        
+        # 添加展开和合并按钮
+        self.expand_btn = QPushButton("全部展开")
+        self.expand_btn.clicked.connect(self.expand_all)
+        self.collapse_btn = QPushButton("全部合并")
+        self.collapse_btn.clicked.connect(self.collapse_all)
+        
+        button_layout.addWidget(self.convert_btn)
+        button_layout.addWidget(self.expand_btn)
+        button_layout.addWidget(self.collapse_btn)
+        button_layout.addStretch()  # 添加弹性空间，使按钮保持在左侧
+        
+        # 创建分割器用于分开展示文本和树形视图
+        splitter = QSplitter(Qt.Horizontal)
+        
+        # 左侧文本编辑区域
+        self.input_area = QTextEdit()
+        self.input_area.setPlaceholderText("请输入或粘贴JSON内容，然后点击上方按钮进行格式化...")
+        
+        # 右侧树形视图区域
+        self.tree_widget = QTreeWidget()
+        self.tree_widget.setHeaderLabels(["Key", "Value"])
+        self.tree_widget.setAlternatingRowColors(True)
+        # 启用右键菜单
+        self.tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree_widget.customContextMenuRequested.connect(self.show_context_menu)
+        
+        splitter.addWidget(self.input_area)
+        splitter.addWidget(self.tree_widget)
+        
+        layout.addLayout(button_layout)
+        layout.addWidget(splitter)
 
         self.setLayout(layout)
 
@@ -41,18 +60,95 @@ class JsonFormatter(BaseTool):
         """
         input_text = self.input_area.toPlainText()
         if not input_text.strip():
-            self.output_area.setPlainText("请输入JSON内容")
+            self.input_area.setPlainText("请输入JSON内容")
             return
 
         try:
             # 解析并格式化JSON
             parsed_json = json.loads(input_text)
             formatted_json = json.dumps(parsed_json, indent=4, ensure_ascii=False)
-            self.output_area.setPlainText(formatted_json)
+            self.input_area.setPlainText(formatted_json)
+            
+            # 更新树形视图
+            self.update_tree_view(parsed_json)
         except json.JSONDecodeError as e:
-            self.output_area.setPlainText(f"JSON格式错误: {str(e)}")
+            self.input_area.setPlainText(f"JSON格式错误: {str(e)}")
         except Exception as e:
-            self.output_area.setPlainText(f"处理错误: {str(e)}")
+            self.input_area.setPlainText(f"处理错误: {str(e)}")
+
+    def update_tree_view(self, data):
+        """
+        更新树形视图显示JSON结构
+        """
+        self.tree_widget.clear()
+        self.add_tree_items(self.tree_widget, data)
+        self.tree_widget.expandAll()
+
+    def add_tree_items(self, parent, data, key=""):
+        """
+        递归添加树形节点
+        """
+        if isinstance(data, dict):
+            for k, v in data.items():
+                item = QTreeWidgetItem([k, ""])
+                parent.addTopLevelItem(item) if isinstance(parent, QTreeWidget) else parent.addChild(item)
+                self.add_tree_items(item, v, k)
+        elif isinstance(data, list):
+            for i, v in enumerate(data):
+                item = QTreeWidgetItem([f"[{i}]", ""])
+                parent.addTopLevelItem(item) if isinstance(parent, QTreeWidget) else parent.addChild(item)
+                self.add_tree_items(item, v, f"[{i}]")
+        else:
+            parent.setText(1, str(data))
+
+    def expand_all(self):
+        """
+        展开所有节点
+        """
+        self.tree_widget.expandAll()
+
+    def collapse_all(self):
+        """
+        合并所有节点
+        """
+        self.tree_widget.collapseAll()
+        
+    def show_context_menu(self, position):
+        """
+        显示右键菜单
+        """
+        # 获取点击的项
+        item = self.tree_widget.itemAt(position)
+        if not item:
+            return
+            
+        # 创建菜单
+        menu = QMenu()
+        
+        # 添加复制key的选项
+        copy_key_action = QAction("复制 Key", self)
+        copy_key_action.triggered.connect(lambda: self.copy_to_clipboard(item.text(0)))
+        menu.addAction(copy_key_action)
+        
+        # 添加复制value的选项
+        copy_value_action = QAction("复制 Value", self)
+        copy_value_action.triggered.connect(lambda: self.copy_to_clipboard(item.text(1)))
+        menu.addAction(copy_value_action)
+        
+        # 添加复制key和value的选项
+        copy_both_action = QAction("复制 Key 和 Value", self)
+        copy_both_action.triggered.connect(lambda: self.copy_to_clipboard(f"{item.text(0)}: {item.text(1)}"))
+        menu.addAction(copy_both_action)
+        
+        # 显示菜单
+        menu.exec_(QCursor.pos())
+
+    def copy_to_clipboard(self, text):
+        """
+        复制文本到剪贴板
+        """
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
 
     def process(self, text: str):
         """
