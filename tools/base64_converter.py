@@ -1,18 +1,28 @@
 import logging
 import base64
 from PyQt5.QtWidgets import QWidget, QTextEdit, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QKeySequence
 from .base_tool import BaseTool
+from .text_context_menu import TextContextMenu
+from .find_manager import FindManager
 
 logger = logging.getLogger(__name__)
 
 class Base64Converter(BaseTool):
     def __init__(self):
         super().__init__('Base64加解码')
+        self.find_manager = FindManager()
         
         # 创建输入输出框
         self.input_text = QTextEdit()
+        self.input_text.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.input_text.customContextMenuRequested.connect(self.show_input_context_menu)
+        
         self.output_area = QTextEdit()
         self.output_area.setReadOnly(True)
+        self.output_area.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.output_area.customContextMenuRequested.connect(self.show_output_context_menu)
         
         # 创建按钮
         self.encode_btn = QPushButton("转为base64")
@@ -38,6 +48,24 @@ class Base64Converter(BaseTool):
         
         # 设置主布局
         self.setLayout(main_layout)
+
+    def show_input_context_menu(self, position):
+        """显示输入框的右键菜单"""
+        TextContextMenu.show_context_menu(self.input_text, position)
+
+    def show_output_context_menu(self, position):
+        """显示输出框的右键菜单"""
+        TextContextMenu.show_context_menu(self.output_area, position)
+        
+    def keyPressEvent(self, event):
+        """处理键盘事件"""
+        # 检查是否按下了Ctrl+F
+        if event.matches(QKeySequence.Find):
+            # 为主文本框显示查找对话框
+            self.find_manager.show_find_dialog(self.input_text)
+            return
+            
+        super().keyPressEvent(event)
 
     def encode(self):
         """将文本编码为Base64"""

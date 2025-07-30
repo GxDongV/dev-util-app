@@ -1,14 +1,18 @@
 # tools/xml_formatter.py
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox
+from PyQt5.QtWidgets import (QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, 
+                             QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QKeySequence
 from .base_tool import BaseTool
+from .text_context_menu import TextContextMenu
+from .find_manager import FindManager
 import xml.etree.ElementTree as ET
 
 
 class XmlFormatter(BaseTool):
     def __init__(self):
         super().__init__("XML编辑器")
+        self.find_manager = FindManager()
 
     def init_ui(self):
         """
@@ -38,6 +42,9 @@ class XmlFormatter(BaseTool):
         # 左侧文本编辑区域
         self.input_area = QTextEdit()
         self.input_area.setPlaceholderText("请输入或粘贴XML内容，然后点击上方按钮进行格式化...")
+        # 启用右键菜单
+        self.input_area.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.input_area.customContextMenuRequested.connect(self.show_text_context_menu)
         
         # 右侧树形视图区域
         self.tree_widget = QTreeWidget()
@@ -129,6 +136,20 @@ class XmlFormatter(BaseTool):
         合并所有节点
         """
         self.tree_widget.collapseAll()
+        
+    def show_text_context_menu(self, position):
+        """显示文本编辑区域的右键菜单"""
+        TextContextMenu.show_context_menu(self.input_area, position)
+        
+    def keyPressEvent(self, event):
+        """处理键盘事件"""
+        # 检查是否按下了Ctrl+F
+        if event.matches(QKeySequence.Find):
+            # 为主文本框显示查找对话框
+            self.find_manager.show_find_dialog(self.input_area)
+            return
+            
+        super().keyPressEvent(event)
         
     def show_context_menu(self, position):
         """
