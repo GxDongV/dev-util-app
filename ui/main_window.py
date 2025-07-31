@@ -6,6 +6,7 @@ from tools.json_formatter import JsonFormatter
 from tools.xml_formatter import XmlFormatter
 from tools.base64_converter import Base64Converter
 from tools.text_statistics import TextStatistics
+from tools.number_converter import NumberConverter
 import qdarkstyle
 from qdarkstyle.light.palette import LightPalette
 from qdarkstyle.dark.palette import DarkPalette
@@ -47,12 +48,14 @@ class MainWindow(QMainWindow):
         self.xml_format_btn = QPushButton("XML格式转换")
         self.base64_converter_btn = QPushButton("Base64转换")
         self.text_statistics_btn = QPushButton("文本统计")
+        self.number_converter_btn = QPushButton("数字转换")
         # 添加按钮到侧边栏
         sidebar_layout.addWidget(self.name_convert_btn)
         sidebar_layout.addWidget(self.json_format_btn)
         sidebar_layout.addWidget(self.xml_format_btn)
         sidebar_layout.addWidget(self.base64_converter_btn)
         sidebar_layout.addWidget(self.text_statistics_btn)
+        sidebar_layout.addWidget(self.number_converter_btn)
         sidebar_layout.addStretch()
 
         # 创建主内容区域
@@ -116,12 +119,14 @@ class MainWindow(QMainWindow):
         self.xml_formatter = XmlFormatter()
         self.base64_converter = Base64Converter()
         self.text_statistics = TextStatistics()
+        self.number_converter = NumberConverter()
         # 添加工具界面到stack
         self.stack.addWidget(self.name_converter)
         self.stack.addWidget(self.json_formatter)
         self.stack.addWidget(self.xml_formatter)
         self.stack.addWidget(self.base64_converter)
         self.stack.addWidget(self.text_statistics)
+        self.stack.addWidget(self.number_converter)
 
     def toggle_theme(self):
         """切换主题"""
@@ -181,3 +186,4 @@ class MainWindow(QMainWindow):
         self.xml_format_btn.clicked.connect(lambda: update_and_switch(2, "XML格式转换"))
         self.base64_converter_btn.clicked.connect(lambda: update_and_switch(3, "Base64转换"))
         self.text_statistics_btn.clicked.connect(lambda: update_and_switch(4, "文本统计"))
+        self.number_converter_btn.clicked.connect(lambda: update_and_switch(5, "数字转换"))

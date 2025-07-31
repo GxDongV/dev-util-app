@@ -7,12 +7,15 @@ from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
 import xml.etree.ElementTree as ET
+import json
 
 
 class XmlFormatter(BaseTool):
     def __init__(self):
         super().__init__("XML编辑器")
         self.find_manager = FindManager()
+        self.original_input = None  # 保存原始输入
+        self.is_converted_to_json = False  # 标记是否已转换为JSON
 
     def init_ui(self):
         """
@@ -25,6 +28,10 @@ class XmlFormatter(BaseTool):
         self.convert_btn = QPushButton("格式化XML")
         self.convert_btn.clicked.connect(self.format_content)
         
+        # 添加转为JSON按钮
+        self.to_json_btn = QPushButton("转为JSON")
+        self.to_json_btn.clicked.connect(self.convert_to_json)
+        
         # 添加展开和合并按钮
         self.expand_btn = QPushButton("全部展开")
         self.expand_btn.clicked.connect(self.expand_all)
@@ -32,6 +39,7 @@ class XmlFormatter(BaseTool):
         self.collapse_btn.clicked.connect(self.collapse_all)
         
         button_layout.addWidget(self.convert_btn)
+        button_layout.addWidget(self.to_json_btn)
         button_layout.addWidget(self.expand_btn)
         button_layout.addWidget(self.collapse_btn)
         button_layout.addStretch()  # 添加弹性空间，使按钮保持在左侧
@@ -85,13 +93,113 @@ class XmlFormatter(BaseTool):
         except Exception as e:
             QMessageBox.warning(self, "格式错误", f"请输入正确的XML格式\n错误信息: {str(e)}")
 
+    def convert_to_json(self):
+        """
+        将XML转换为JSON格式，或恢复原始XML输入
+        """
+        # 如果已经转换为JSON，则恢复原始输入
+        if self.is_converted_to_json and self.original_input:
+            self.input_area.setPlainText(self.original_input)
+            self.update_tree_view(self.original_input)
+            self.to_json_btn.setText("转为JSON")
+            self.is_converted_to_json = False
+            return
+
+        input_text = self.input_area.toPlainText()
+        if not input_text.strip():
+            QMessageBox.warning(self, "输入错误", "请输入XML内容")
+            return
+
+        # 保存原始输入
+        self.original_input = input_text
+
+        try:
+            # 解析XML
+            root = ET.fromstring(input_text)
+            
+            # 转换为字典
+            data = self._xml_to_dict(root)
+            
+            # 转换为JSON
+            json_str = json.dumps(data, indent=4, ensure_ascii=False)
+            
+            # 显示结果
+            self.input_area.setPlainText(json_str)
+            
+            # 更新按钮文本
+            self.to_json_btn.setText("恢复原始XML")
+            self.is_converted_to_json = True
+            
+            # 更新树形视图，添加提示信息
+            self.update_tree_view('<root><message>已转换为JSON格式，请在左侧查看</message></root>')
+        except ET.ParseError as e:
+            QMessageBox.warning(self, "格式错误", f"请输入正确的XML格式\n错误信息: {str(e)}")
+        except Exception as e:
+            QMessageBox.warning(self, "处理错误", f"处理出错: {str(e)}")
+
+    def _xml_to_dict(self, element):
+        """
+        递归将XML元素转换为字典
+        """
+        # 获取元素的属性
+        attrs = element.attrib
+        
+        # 获取元素的文本内容
+        text = element.text.strip() if element.text else ""
+        
+        # 获取子元素
+        children = list(element)
+        
+        # 构建结果字典
+        result = {}
+        
+        # 添加属性
+        if attrs:
+            result["@attributes"] = attrs
+            
+        # 处理子元素
+        if children:
+            child_dict = {}
+            for child in children:
+                child_data = self._xml_to_dict(child)
+                if child.tag in child_dict:
+                    # 如果标签已存在，转换为列表
+                    if not isinstance(child_dict[child.tag], list):
+                        child_dict[child.tag] = [child_dict[child.tag]]
+                    child_dict[child.tag].append(child_data)
+                else:
+                    child_dict[child.tag] = child_data
+            
+            # 合并子元素到结果中
+            result.update(child_dict)
+            
+            # 如果有文本内容，添加到特殊键中
+            if text:
+                result["#text"] = text
+        else:
+            # 没有子元素，直接返回文本或空字典
+            if text:
+                if attrs:
+                    result["#text"] = text
+                else:
+                    return text
+            elif not attrs:
+                return ""
+        
+        return result
+
     def update_tree_view(self, xml_text):
         """
         更新树形视图显示XML结构
         """
         self.tree_widget.clear()
         try:
-            root = ET.fromstring(xml_text)
+            # 如果传入的是字符串，则解析为XML元素
+            if isinstance(xml_text, str):
+                root = ET.fromstring(xml_text)
+            else:
+                # 如果传入的是XML元素，则直接使用
+                root = xml_text
             self.add_tree_items(self.tree_widget, root)
             self.tree_widget.expandAll()
         except ET.ParseError as e:

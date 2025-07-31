@@ -6,11 +6,14 @@ from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
 import json
+import xml.etree.ElementTree as ET
 
 class JsonFormatter(BaseTool):
     def __init__(self):
         super().__init__("JSON编辑器")
         self.find_manager = FindManager()
+        self.original_input = None  # 保存原始输入
+        self.is_converted_to_xml = False  # 标记是否已转换为XML
 
     def init_ui(self):
         """
@@ -23,6 +26,10 @@ class JsonFormatter(BaseTool):
         self.convert_btn = QPushButton("格式化JSON")
         self.convert_btn.clicked.connect(self.format_content)
         
+        # 添加转为XML按钮
+        self.to_xml_btn = QPushButton("转为XML")
+        self.to_xml_btn.clicked.connect(self.convert_to_xml)
+        
         # 添加展开和合并按钮
         self.expand_btn = QPushButton("全部展开")
         self.expand_btn.clicked.connect(self.expand_all)
@@ -30,11 +37,12 @@ class JsonFormatter(BaseTool):
         self.collapse_btn.clicked.connect(self.collapse_all)
         
         button_layout.addWidget(self.convert_btn)
+        button_layout.addWidget(self.to_xml_btn)
         button_layout.addWidget(self.expand_btn)
         button_layout.addWidget(self.collapse_btn)
         button_layout.addStretch()  # 添加弹性空间，使按钮保持在左侧
         
-        # 创建分割器用于分开展示文本和树形视图
+        # 创建分割器用于分展开示文本和树形视图
         splitter = QSplitter(Qt.Horizontal)
         
         # 左侧文本编辑区域
@@ -81,6 +89,75 @@ class JsonFormatter(BaseTool):
             QMessageBox.warning(self, "格式错误", f"请输入正确的JSON格式\n错误信息: {str(e)}")
         except Exception as e:
             QMessageBox.warning(self, "处理错误", f"处理出错: {str(e)}")
+
+    def convert_to_xml(self):
+        """
+        将JSON转换为XML格式，或恢复原始JSON输入
+        """
+        # 如果已经转换为XML，则恢复原始输入
+        if self.is_converted_to_xml and self.original_input:
+            self.input_area.setPlainText(self.original_input)
+            self.update_tree_view(json.loads(self.original_input))
+            self.to_xml_btn.setText("转为XML")
+            self.is_converted_to_xml = False
+            return
+
+        input_text = self.input_area.toPlainText()
+        if not input_text.strip():
+            QMessageBox.warning(self, "输入错误", "请输入JSON内容")
+            return
+
+        # 保存原始输入
+        self.original_input = input_text
+
+        try:
+            # 解析JSON
+            parsed_json = json.loads(input_text)
+            
+            # 创建根元素
+            root = ET.Element("root")
+            
+            # 递归转换JSON到XML
+            self._dict_to_xml(parsed_json, root)
+            
+            # 生成XML字符串
+            xml_str = ET.tostring(root, encoding='unicode')
+            
+            # 格式化XML
+            import xml.dom.minidom
+            dom = xml.dom.minidom.parseString(xml_str)
+            formatted_xml = dom.toprettyxml(indent="    ")
+            # 移除XML声明前的空行
+            formatted_xml = '\n'.join(line for line in formatted_xml.split('\n') if line.strip())
+            
+            # 显示结果
+            self.input_area.setPlainText(formatted_xml)
+            
+            # 更新按钮文本
+            self.to_xml_btn.setText("恢复原始JSON")
+            self.is_converted_to_xml = True
+            
+            # 更新树形视图
+            self.update_tree_view({"message": "已转换为XML格式，请在左侧查看"})
+        except json.JSONDecodeError as e:
+            QMessageBox.warning(self, "格式错误", f"请输入正确的JSON格式\n错误信息: {str(e)}")
+        except Exception as e:
+            QMessageBox.warning(self, "处理错误", f"处理出错: {str(e)}")
+
+    def _dict_to_xml(self, data, parent):
+        """
+        递归将字典转换为XML元素
+        """
+        if isinstance(data, dict):
+            for key, value in data.items():
+                element = ET.SubElement(parent, key)
+                self._dict_to_xml(value, element)
+        elif isinstance(data, list):
+            for item in data:
+                element = ET.SubElement(parent, "item")
+                self._dict_to_xml(item, element)
+        else:
+            parent.text = str(data)
 
     def update_tree_view(self, data):
         """
