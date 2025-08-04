@@ -8,6 +8,9 @@ import re
 from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
+from .line_number_text_edit import LineNumberTextEdit
+from .text_context_menu import TextContextMenu
+from .find_manager import FindManager
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +96,7 @@ class NumberConverter(BaseTool):
         self.find_manager = FindManager()
         
         # 创建输入文本框
-        self.input_text = QTextEdit()
+        self.input_text = LineNumberTextEdit()
         self.input_text.textChanged.connect(self.update_conversions)
         self.input_text.setPlaceholderText("请输入数字...")
         self.input_text.setContextMenuPolicy(Qt.CustomContextMenu)

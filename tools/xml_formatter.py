@@ -6,6 +6,7 @@ from PyQt5.QtGui import QCursor, QKeySequence
 from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
+from .line_number_text_edit import LineNumberTextEdit
 import xml.etree.ElementTree as ET
 import json
 
@@ -48,7 +49,7 @@ class XmlFormatter(BaseTool):
         splitter = QSplitter(Qt.Horizontal)
         
         # 左侧文本编辑区域
-        self.input_area = QTextEdit()
+        self.input_area = LineNumberTextEdit()
         self.input_area.setPlaceholderText("请输入或粘贴XML内容，然后点击上方按钮进行格式化...")
         # 启用右键菜单
         self.input_area.setContextMenuPolicy(Qt.CustomContextMenu)

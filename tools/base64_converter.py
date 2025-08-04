@@ -1,11 +1,12 @@
 import logging
 import base64
-from PyQt5.QtWidgets import QWidget, QTextEdit, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
+from .line_number_text_edit import LineNumberTextEdit
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +16,11 @@ class Base64Converter(BaseTool):
         self.find_manager = FindManager()
         
         # 创建输入输出框
-        self.input_text = QTextEdit()
+        self.input_text = LineNumberTextEdit()
         self.input_text.setContextMenuPolicy(Qt.CustomContextMenu)
         self.input_text.customContextMenuRequested.connect(self.show_input_context_menu)
         
-        self.output_area = QTextEdit()
+        self.output_area = LineNumberTextEdit()
         self.output_area.setReadOnly(True)
         self.output_area.setContextMenuPolicy(Qt.CustomContextMenu)
         self.output_area.customContextMenuRequested.connect(self.show_output_context_menu)

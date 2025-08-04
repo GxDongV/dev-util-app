@@ -96,6 +96,11 @@ class MainWindow(QMainWindow):
 
         # 连接按钮事件
         self.connect_signals()
+        
+        # 初始化行号主题颜色
+        from tools.line_number_text_edit import LineNumberTextEdit
+        for widget in self.findChildren(LineNumberTextEdit):
+            widget.set_dark_theme(self.is_dark_theme)
 
     def set_window_icon(self):
         """设置窗口图标"""
@@ -146,6 +151,11 @@ class MainWindow(QMainWindow):
             self.is_dark_theme = True
             # 更新窗口标题栏颜色（尝试使用QSS）
             self.update_title_bar_color(light=False)
+        
+        # 更新所有LineNumberTextEdit实例的主题
+        from tools.line_number_text_edit import LineNumberTextEdit
+        for widget in self.findChildren(LineNumberTextEdit):
+            widget.set_dark_theme(self.is_dark_theme)
 
     def update_title_bar_color(self, light=True):
         """更新窗口标题栏颜色"""

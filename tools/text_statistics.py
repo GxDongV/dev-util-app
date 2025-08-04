@@ -9,6 +9,7 @@ import re
 from .base_tool import BaseTool
 from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
+from .line_number_text_edit import LineNumberTextEdit
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class TextStatistics(BaseTool):
         self.find_manager = FindManager()
         
         # 创建输入文本框
-        self.input_text = QTextEdit()
+        self.input_text = LineNumberTextEdit()
         self.input_text.textChanged.connect(self.update_statistics)
         self.input_text.setContextMenuPolicy(Qt.CustomContextMenu)
         self.input_text.customContextMenuRequested.connect(self.show_input_context_menu)
