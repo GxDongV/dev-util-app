@@ -14,6 +14,7 @@ Compression=lzma
 SolidCompression=yes
 [Files]
 Source: "D:\work\python\devUtilsApp\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\work\python\devUtilsApp\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 [Icons]
 Name: "{group}\DevUtilsApp"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\app_icon.ico"
 Name: "{commondesktop}\DevUtilsApp"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\app_icon.ico"; Tasks: desktopicon

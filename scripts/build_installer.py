@@ -216,16 +216,20 @@ def create_installer(installer_tool="inno", onefile=True):
             f.write(f"[Files]\n")
             if onefile:
                 f.write(f"Source: \"{exe_path}\"; DestDir: \"{{app}}\"; Flags: ignoreversion\n")
+                # 复制assets文件夹
+                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
             else:
                 # 多文件模式需要复制整个目录
                 f.write(f"Source: \"{os.path.join(dist_dir, 'main')}\*\"; DestDir: \"{{app}}\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
-            f.write(f"[Icons]\n")
-            f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
-            f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
-            f.write(f"[Tasks]\n")
-            f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: unchecked\n")
-            f.write(f"[Run]\n")
-            f.write(f"Filename: \"{{app}}\\main.exe\"; Description: \"Run DevUtilsApp\"; Flags: nowait postinstall skipifsilent\n")
+                # 复制assets文件夹
+                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
+                f.write(f"[Icons]\n")
+                f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
+                f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
+                f.write(f"[Tasks]\n")
+                f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: unchecked\n")
+                f.write(f"[Run]\n")
+                f.write(f"Filename: \"{{app}}\\main.exe\"; Description: \"Run DevUtilsApp\"; Flags: nowait postinstall skipifsilent\n")
 
         # 运行Inno Setup编译脚本
         try:
@@ -261,14 +265,23 @@ def create_installer(installer_tool="inno", onefile=True):
             f.write(f"  SetOutPath '$INSTDIR'\n")
             if onefile:
                 f.write(f"  File '{exe_path}'\n")
-            else:
-                # 多文件模式需要复制整个目录
-                f.write(f"  SetOutPath '$INSTDIR'\n")
-                f.write(f"  File /r '{os.path.join(dist_dir, 'main')}\\*.*'\n")
-            f.write(f"  File '{os.path.join(project_root, 'assets', 'app_icon.ico')}'\n")
+            # 复制assets文件夹
+            f.write(f"  CreateDirectory '$INSTDIR\\assets'\n")
+            f.write(f"  SetOutPath '$INSTDIR\\assets'\n")
+            f.write(f"  File /r '{os.path.join(project_root, 'assets')}\\*.*'\n")
             f.write("SectionEnd\n")
+            # 创建桌面快捷方式
             f.write("Section 'Create Desktop Shortcut' SEC02\n")
-            f.write("  CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\main.exe' '' '$INSTDIR\\app_icon.ico'\n")
+            f.write("  CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\main.exe' '' '$INSTDIR\\assets\\app_icon.ico'\n")
+            f.write("SectionEnd\n")
+        if not onefile:
+            # 多文件模式需要复制整个目录
+            f.write(f"  SetOutPath '$INSTDIR'\n")
+            f.write(f"  File /r '{os.path.join(dist_dir, 'main')}\\*.*'\n")
+            # 复制assets文件夹
+            f.write(f"  CreateDirectory '$INSTDIR\\assets'\n")
+            f.write(f"  SetOutPath '$INSTDIR\\assets'\n")
+            f.write(f"  File /r '{os.path.join(project_root, 'assets')}\\*.*'\n")
             f.write("SectionEnd\n")
 
         # 运行NSIS编译脚本
