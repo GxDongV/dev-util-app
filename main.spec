@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['D:\\work\\python\\devUtilsApp\\src\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[('ui', 'ui'), ('tools', 'tools'), ('resources', 'resources')],
+    datas=[('D:\\work\\python\\devUtilsApp\\ui', 'ui'), ('D:\\work\\python\\devUtilsApp\\tools', 'tools'), ('D:\\work\\python\\devUtilsApp\\assets', 'assets')],
     hiddenimports=['qdarkstyle', 'qdarkstyle.dark.palette', 'qdarkstyle.light.palette', 'qdarkstyle.dark.stylesheet', 'qdarkstyle.light.stylesheet', 'qdarkstyle.utils'],
     hookspath=[],
     hooksconfig={},
@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['resources\\app_icon.ico'],
+    icon=['D:\\work\\python\\devUtilsApp\\assets\\app_icon.ico'],
 )
 coll = COLLECT(
     exe,

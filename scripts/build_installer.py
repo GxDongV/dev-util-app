@@ -12,9 +12,10 @@ def build_exe(onefile=True):
     onefile: True表示单文件打包，False表示多文件打包
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    dist_dir = os.path.join(current_dir, 'dist')
-    build_dir = os.path.join(current_dir, 'build')
-    spec_file = os.path.join(current_dir, 'main.spec')
+    project_root = os.path.abspath(os.path.join(current_dir, '..'))
+    dist_dir = os.path.join(project_root, 'dist')
+    build_dir = os.path.join(project_root, 'build')
+    spec_file = os.path.join(project_root, 'main.spec')
 
     # 清理旧的构建文件
     if os.path.exists(dist_dir):
@@ -25,6 +26,9 @@ def build_exe(onefile=True):
         os.remove(spec_file)
 
     # 构建PyInstaller命令
+    # 获取项目根目录
+    project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
     cmd = [
         "pyinstaller",
         "--noconfirm",
@@ -35,11 +39,11 @@ def build_exe(onefile=True):
         "--hidden-import=qdarkstyle.dark.stylesheet",
         "--hidden-import=qdarkstyle.light.stylesheet",
         "--hidden-import=qdarkstyle.utils",
-        "--add-data", "ui;ui",
-        "--add-data", "tools;tools",
-        "--add-data", "resources;resources",
-        "--icon", "resources/app_icon.ico",
-        "main.py"
+        "--add-data", f"{os.path.join(project_root, 'ui')};ui",
+        "--add-data", f"{os.path.join(project_root, 'tools')};tools",
+        "--add-data", f"{os.path.join(project_root, 'assets')};assets",
+        "--icon", f"{os.path.join(project_root, 'assets', 'app_icon.ico')}",
+        f"{os.path.join(project_root, 'src', 'main.py')}"
     ]
 
     # 根据参数决定是否使用单文件模式
@@ -53,7 +57,7 @@ def build_exe(onefile=True):
     print("执行命令:", " ".join(cmd))
 
     try:
-        result = subprocess.run(cmd, cwd=current_dir, check=True,
+        result = subprocess.run(cmd, cwd=project_root, check=True,
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                               text=True)
         print("单文件打包成功!")
@@ -163,12 +167,13 @@ def create_installer(installer_tool="inno", onefile=True):
     onefile: True表示使用单文件exe，False表示使用多文件目录
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    dist_dir = os.path.join(current_dir, 'dist')
+    project_root = os.path.abspath(os.path.join(current_dir, '..'))
+    dist_dir = os.path.join(project_root, 'dist')
     if onefile:
         exe_path = os.path.join(dist_dir, 'main.exe')
     else:
         exe_path = os.path.join(dist_dir, 'main', 'main.exe')
-    installer_output_dir = os.path.join(current_dir, '..', 'installer')
+    installer_output_dir = os.path.join(project_root, 'installer')
 
     # 检查单文件是否存在
     if not os.path.exists(exe_path):
@@ -205,7 +210,7 @@ def create_installer(installer_tool="inno", onefile=True):
             f.write(f"DefaultGroupName=DevUtilsApp\n")
             f.write(f"OutputDir={installer_output_dir}\n")
             f.write(f"OutputBaseFilename=DevUtilsApp_Setup\n")
-            f.write(f"SetupIconFile={os.path.join(current_dir, '..', 'assets', 'app_icon.ico')}\n")
+            f.write(f"SetupIconFile={os.path.join(project_root, 'assets', 'app_icon.ico')}\n")
             f.write(f"Compression=lzma\n")
             f.write(f"SolidCompression=yes\n")
             f.write(f"[Files]\n")
@@ -215,8 +220,8 @@ def create_installer(installer_tool="inno", onefile=True):
                 # 多文件模式需要复制整个目录
                 f.write(f"Source: \"{os.path.join(dist_dir, 'main')}\*\"; DestDir: \"{{app}}\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
             f.write(f"[Icons]\n")
-            f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\resources\\app_icon.ico\"\n")
-            f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\resources\\app_icon.ico\"; Tasks: desktopicon\n")
+            f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
+            f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
             f.write(f"[Tasks]\n")
             f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: unchecked\n")
             f.write(f"[Run]\n")
@@ -260,7 +265,7 @@ def create_installer(installer_tool="inno", onefile=True):
                 # 多文件模式需要复制整个目录
                 f.write(f"  SetOutPath '$INSTDIR'\n")
                 f.write(f"  File /r '{os.path.join(dist_dir, 'main')}\\*.*'\n")
-            f.write(f"  File '{os.path.join(current_dir, '..', 'assets', 'app_icon.ico')}'\n")
+            f.write(f"  File '{os.path.join(project_root, 'assets', 'app_icon.ico')}'\n")
             f.write("SectionEnd\n")
             f.write("Section 'Create Desktop Shortcut' SEC02\n")
             f.write("  CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\main.exe' '' '$INSTDIR\\app_icon.ico'\n")
