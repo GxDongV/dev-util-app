@@ -1,14 +1,16 @@
 # tools/name_converter.py
 
 import logging
-from .base_tool import BaseTool
 import re
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
-from .text_context_menu import TextContextMenu
+from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+
+from .base_tool import BaseTool
 from .find_manager import FindManager
 from .line_number_text_edit import LineNumberTextEdit
+from .text_context_menu import TextContextMenu
 
 logger = logging.getLogger(__name__)
 

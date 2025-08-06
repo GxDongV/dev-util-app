@@ -3,10 +3,10 @@
 通用查找替换对话框类
 """
 
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-                             QLineEdit, QPushButton, QCheckBox, QGroupBox, 
-                             QMessageBox, QRadioButton, QButtonGroup)
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                             QLineEdit, QPushButton, QCheckBox, QGroupBox,
+                             QRadioButton, QButtonGroup)
 
 
 class FindDialog(QDialog):

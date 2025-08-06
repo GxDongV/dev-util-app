@@ -1,12 +1,14 @@
-import logging
 import base64
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+import logging
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QHBoxLayout
+
 from .base_tool import BaseTool
-from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
 from .line_number_text_edit import LineNumberTextEdit
+from .text_context_menu import TextContextMenu
 
 logger = logging.getLogger(__name__)
 

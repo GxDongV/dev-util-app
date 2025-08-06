@@ -6,6 +6,7 @@
 """
 
 import sys
+
 from PyQt5.QtCore import Qt, QRect, QSize, QPoint
 from PyQt5.QtGui import QPainter, QFont, QColor, QTextFormat
 from PyQt5.QtWidgets import QTextEdit, QApplication, QWidget

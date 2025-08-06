@@ -36,13 +36,13 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     # 设置应用程序图标
-    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "app_icon.ico")
+    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "app_icon.ico")
     if os.path.exists(icon_path):
         app.setWindowIcon(QIcon(icon_path))
     else:
         # 尝试在打包后的资源目录中查找
         try:
-            packed_icon_path = get_resource_path("resources/app_icon.ico")
+            packed_icon_path = get_resource_path("assets/app_icon.ico")
             if os.path.exists(packed_icon_path):
                 app.setWindowIcon(QIcon(packed_icon_path))
         except Exception:
@@ -57,7 +57,7 @@ if __name__ == "__main__":
         window.setWindowIcon(QIcon(icon_path))
     else:
         try:
-            packed_icon_path = get_resource_path("resources/app_icon.ico")
+            packed_icon_path = get_resource_path("assets/app_icon.ico")
             if os.path.exists(packed_icon_path):
                 window.setWindowIcon(QIcon(packed_icon_path))
         except Exception:

@@ -1,10 +1,8 @@
 import os
-import sys
-import os
-import subprocess
 import shutil
+import subprocess
 import winreg  # 用于Windows注册表查询
-from pathlib import Path
+
 
 def build_exe(onefile=True):
     """
@@ -227,7 +225,7 @@ def create_installer(installer_tool="inno", onefile=True):
                 f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
                 f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
                 f.write(f"[Tasks]\n")
-                f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: unchecked\n")
+                f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: checked\n")
                 f.write(f"[Run]\n")
                 f.write(f"Filename: \"{{app}}\\main.exe\"; Description: \"Run DevUtilsApp\"; Flags: nowait postinstall skipifsilent\n")
 
@@ -272,6 +270,7 @@ def create_installer(installer_tool="inno", onefile=True):
             f.write("SectionEnd\n")
             # 创建桌面快捷方式
             f.write("Section 'Create Desktop Shortcut' SEC02\n")
+            f.write("  SectionIn RO\n")
             f.write("  CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\main.exe' '' '$INSTDIR\\assets\\app_icon.ico'\n")
             f.write("SectionEnd\n")
         if not onefile:

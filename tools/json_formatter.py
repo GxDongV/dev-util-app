@@ -1,13 +1,17 @@
 # tools/json_formatter.py
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor, QKeySequence
-from .base_tool import BaseTool
-from .text_context_menu import TextContextMenu
-from .find_manager import FindManager
-from .line_number_text_edit import LineNumberTextEdit
 import json
 import xml.etree.ElementTree as ET
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor, QKeySequence
+from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QHBoxLayout, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, \
+    QAction, QApplication, QMessageBox
+
+from .base_tool import BaseTool
+from .find_manager import FindManager
+from .line_number_text_edit import LineNumberTextEdit
+from .text_context_menu import TextContextMenu
+
 
 class JsonFormatter(BaseTool):
     def __init__(self):

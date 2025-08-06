@@ -1,14 +1,16 @@
 # tools/xml_formatter.py
-from PyQt5.QtWidgets import (QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout, QWidget, QLabel, 
-                             QTreeWidget, QTreeWidgetItem, QSplitter, QMenu, QAction, QApplication, QMessageBox)
+import json
+import xml.etree.ElementTree as ET
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QKeySequence
+from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QHBoxLayout, QTreeWidget, QTreeWidgetItem, QSplitter, QMenu,
+                             QAction, QApplication, QMessageBox)
+
 from .base_tool import BaseTool
-from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
 from .line_number_text_edit import LineNumberTextEdit
-import xml.etree.ElementTree as ET
-import json
+from .text_context_menu import TextContextMenu
 
 
 class XmlFormatter(BaseTool):

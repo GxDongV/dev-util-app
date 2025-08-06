@@ -3,8 +3,9 @@
 统一的查找功能管理类
 """
 
+from PyQt5.QtGui import QTextCursor, QTextDocument, QBrush, QColor
 from PyQt5.QtWidgets import QTextEdit, QMessageBox
-from PyQt5.QtGui import QTextCursor, QTextDocument, QBrush, QColor, QTextCharFormat
+
 from .find_dialog import FindDialog
 
 

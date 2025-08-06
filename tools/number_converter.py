@@ -1,16 +1,16 @@
 # tools/number_converter.py
 
 import logging
-from PyQt5.QtWidgets import QWidget, QTextEdit, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QFrame, QLineEdit, QPushButton
+import re
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
-import re
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QGridLayout, QFrame, QLineEdit
+
 from .base_tool import BaseTool
-from .text_context_menu import TextContextMenu
 from .find_manager import FindManager
 from .line_number_text_edit import LineNumberTextEdit
 from .text_context_menu import TextContextMenu
-from .find_manager import FindManager
 
 logger = logging.getLogger(__name__)
 

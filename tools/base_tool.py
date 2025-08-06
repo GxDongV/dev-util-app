@@ -6,7 +6,8 @@
 所有具体工具类都应继承此类并实现抽象方法
 """
 import logging
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+
 from PyQt5.QtWidgets import QWidget
 
 # 配置日志记录

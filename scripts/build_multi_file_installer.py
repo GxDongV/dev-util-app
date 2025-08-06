@@ -1,4 +1,3 @@
-import os
 import sys
 import os
 # 添加当前目录到Python路径
