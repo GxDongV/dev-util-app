@@ -34,18 +34,14 @@ class XmlFormatter(BaseTool):
         # 去除首尾空白
         input_text = input_text.strip()
         
-        # 移除XML声明中的非法字符（如您遇到的column 115问题）
+        # 处理XML声明，但保留原始编码声明
         if input_text.startswith('<?xml'):
             # 找到XML声明的结束位置
             decl_end = input_text.find('?>')
             if decl_end != -1:
-                # 提取XML声明部分
+                # 提取XML声明部分并保持原样
                 declaration = input_text[:decl_end+2]
-                # 修正编码声明格式问题
-                import re
-                # 修复编码声明中的特殊字符问题
-                declaration = re.sub(r'encoding\s*=\s*["\']GB18030["\']', 'encoding="UTF-8"', declaration)
-                # 重新组合文本
+                # 重新组合文本，不修改编码声明
                 input_text = declaration + input_text[decl_end+2:]
         
         # 修复命名空间中的空格问题
@@ -134,6 +130,10 @@ class XmlFormatter(BaseTool):
         self.convert_btn = QPushButton("格式化XML")
         self.convert_btn.clicked.connect(self.format_content)
         
+        # 添加智能格式化按钮
+        self.smart_format_btn = QPushButton("智能格式化")
+        self.smart_format_btn.clicked.connect(self.smart_format_content)
+        
         # 添加转为JSON按钮
         self.to_json_btn = QPushButton("转为JSON")
         self.to_json_btn.clicked.connect(self.convert_to_json)
@@ -145,6 +145,7 @@ class XmlFormatter(BaseTool):
         self.collapse_btn.clicked.connect(self.collapse_all)
         
         button_layout.addWidget(self.convert_btn)
+        button_layout.addWidget(self.smart_format_btn)
         button_layout.addWidget(self.to_json_btn)
         button_layout.addWidget(self.expand_btn)
         button_layout.addWidget(self.collapse_btn)
@@ -176,15 +177,54 @@ class XmlFormatter(BaseTool):
 
         self.setLayout(layout)
 
+    def _extract_xml_declaration(self, xml_text):
+        """
+        提取XML声明部分，并处理其中的转义字符
+        """
+        if xml_text.startswith("<?xml"):
+            end_pos = xml_text.find("?>")
+            if end_pos != -1:
+                declaration = xml_text[:end_pos + 2]
+                # 处理XML声明中的转义字符
+                declaration = self._unescape_quotes(declaration)
+                return declaration
+        return None
+
     def format_content(self):
         """
-        实现XML格式化逻辑
+        实现XML格式化逻辑（基础版本，不包含特殊字符处理）
         """
         input_text = self.input_area.toPlainText()
         if not input_text.strip():
             QMessageBox.warning(self, "输入错误", "请输入XML内容")
             return
 
+        try:
+            # 直接解析并格式化XML，不进行额外的预处理
+            import xml.dom.minidom
+            dom = xml.dom.minidom.parseString(input_text)
+            formatted_xml = dom.toprettyxml(indent="    ")
+            # 移除XML声明前的空行
+            formatted_xml = '\n'.join(line for line in formatted_xml.split('\n') if line.strip())
+            self.input_area.setPlainText(formatted_xml)
+            
+            # 更新树形视图
+            self.update_tree_view(input_text)
+        except Exception as e:
+            QMessageBox.warning(self, "格式错误", f"请输入正确的XML格式\n错误信息: {str(e)}")
+
+    def smart_format_content(self):
+        """
+        实现智能XML格式化逻辑，包含所有特殊处理
+        """
+        input_text = self.input_area.toPlainText()
+        if not input_text.strip():
+            QMessageBox.warning(self, "输入错误", "请输入XML内容")
+            return
+
+        # 提取原始XML声明
+        original_declaration = self._extract_xml_declaration(input_text)
+        
         # 清理输入文本
         cleaned_text = self._clean_xml_input(input_text)
         # 处理转义的引号和其他转义字符
@@ -203,6 +243,16 @@ class XmlFormatter(BaseTool):
             formatted_xml = dom.toprettyxml(indent="    ")
             # 移除XML声明前的空行
             formatted_xml = '\n'.join(line for line in formatted_xml.split('\n') if line.strip())
+            
+            # 如果有原始声明，替换格式化后的声明
+            if original_declaration:
+                # 查找格式化后的声明
+                if formatted_xml.startswith("<?xml"):
+                    end_pos = formatted_xml.find("?>")
+                    if end_pos != -1:
+                        # 替换为原始声明
+                        formatted_xml = original_declaration + formatted_xml[end_pos + 2:]
+            
             self.input_area.setPlainText(formatted_xml)
             
             # 更新树形视图
