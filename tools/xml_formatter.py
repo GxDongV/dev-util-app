@@ -20,6 +20,109 @@ class XmlFormatter(BaseTool):
         self.original_input = None  # 保存原始输入
         self.is_converted_to_json = False  # 标记是否已转换为JSON
 
+    def _clean_xml_input(self, input_text):
+        """
+        清理XML输入文本，处理可能导致解析失败的问题
+        """
+        if not input_text:
+            return input_text
+            
+        # 去除BOM头
+        if input_text.startswith('\ufeff'):
+            input_text = input_text.lstrip('\ufeff')
+            
+        # 去除首尾空白
+        input_text = input_text.strip()
+        
+        # 移除XML声明中的非法字符（如您遇到的column 115问题）
+        if input_text.startswith('<?xml'):
+            # 找到XML声明的结束位置
+            decl_end = input_text.find('?>')
+            if decl_end != -1:
+                # 提取XML声明部分
+                declaration = input_text[:decl_end+2]
+                # 修正编码声明格式问题
+                import re
+                # 修复编码声明中的特殊字符问题
+                declaration = re.sub(r'encoding\s*=\s*["\']GB18030["\']', 'encoding="UTF-8"', declaration)
+                # 重新组合文本
+                input_text = declaration + input_text[decl_end+2:]
+        
+        # 修复命名空间中的空格问题
+        import re
+        # 修复xmlns属性中URL包含空格的问题
+        input_text = re.sub(r'xmlns(:\w+)?\s*=\s*["\'][^"\']*http://([^"\']*?)\s+([^"\']*?)["\']', 
+                           r'xmlns\1="http://\2\3"', input_text)
+        
+        # 修复命名空间声明之间缺少空格的问题
+        input_text = re.sub(r'(["\'])((?=xmlns)|(?=<))', r'\1 \2', input_text)
+        
+        # 确保命名空间声明之间有空格
+        input_text = re.sub(r'(["\'])xmlns:', r'\1 xmlns:', input_text)
+        
+        return input_text
+
+    def _unescape_quotes(self, text):
+        """
+        处理转义的引号，将 \" 转换为 "
+        同时处理可能存在的其他转义序列
+        """
+        if not text:
+            return text
+            
+        # 处理双引号转义
+        text = text.replace('\\"', '"')
+        
+        # 处理单引号转义
+        text = text.replace("\\'", "'")
+        
+        # 处理其他常见的转义字符
+        text = text.replace("\\n", "\n")  # 换行符
+        text = text.replace("\\r", "\r")  # 回车符
+        text = text.replace("\\t", "\t")  # 制表符
+        text = text.replace("\\\\", "\\")  # 反斜杠本身
+        
+        return text
+
+    def _escape_xml_special_chars(self, text):
+        """
+        转义XML中的特殊字符
+        """
+        if not text:
+            return text
+        # 先反转义已经转义过的字符，避免重复转义
+        text = text.replace("&amp;", "&")
+        text = text.replace("&lt;", "<")
+        text = text.replace("&gt;", ">")
+        text = text.replace("&quot;", '"')
+        text = text.replace("&apos;", "'")
+        
+        # 再进行转义
+        text = text.replace("&", "&amp;")
+        text = text.replace("<", "&lt;")
+        text = text.replace(">", "&gt;")
+        text = text.replace('"', "&quot;")
+        text = text.replace("'", "&apos;")
+        return text
+
+    def _validate_xml_structure(self, input_text):
+        """
+        验证XML结构是否合法（简单检查）
+        """
+        try:
+            # 检查是否有且仅有一个根元素
+            import re
+            # 移除注释
+            clean_text = re.sub(r'<!--.*?-->', '', input_text, flags=re.DOTALL)
+            # 找到所有根元素（第一层元素）
+            root_elements = re.findall(r'<([^/\s>]+)[^>]*>.*?</\1>|<([^/\s>]+)[^>]*/>', clean_text, re.DOTALL)
+            # 如果没有根元素或根元素超过一个
+            if len(root_elements) == 0:
+                return False, "未找到根元素"
+            return True, ""
+        except Exception as e:
+            return False, str(e)
+
     def init_ui(self):
         """
         重写init_ui方法，创建独立的UI布局
@@ -82,17 +185,28 @@ class XmlFormatter(BaseTool):
             QMessageBox.warning(self, "输入错误", "请输入XML内容")
             return
 
+        # 清理输入文本
+        cleaned_text = self._clean_xml_input(input_text)
+        # 处理转义的引号和其他转义字符
+        cleaned_text = self._unescape_quotes(cleaned_text)
+        
+        # 验证XML结构
+        is_valid, error_msg = self._validate_xml_structure(cleaned_text)
+        if not is_valid and error_msg:
+            QMessageBox.warning(self, "格式错误", f"XML结构不合法: {error_msg}")
+            return
+
         try:
             # 解析并格式化XML
             import xml.dom.minidom
-            dom = xml.dom.minidom.parseString(input_text)
+            dom = xml.dom.minidom.parseString(cleaned_text)
             formatted_xml = dom.toprettyxml(indent="    ")
             # 移除XML声明前的空行
             formatted_xml = '\n'.join(line for line in formatted_xml.split('\n') if line.strip())
             self.input_area.setPlainText(formatted_xml)
             
             # 更新树形视图
-            self.update_tree_view(input_text)
+            self.update_tree_view(cleaned_text)
         except Exception as e:
             QMessageBox.warning(self, "格式错误", f"请输入正确的XML格式\n错误信息: {str(e)}")
 
@@ -116,9 +230,20 @@ class XmlFormatter(BaseTool):
         # 保存原始输入
         self.original_input = input_text
 
+        # 清理输入文本
+        cleaned_text = self._clean_xml_input(input_text)
+        # 处理转义的引号和其他转义字符
+        cleaned_text = self._unescape_quotes(cleaned_text)
+        
+        # 验证XML结构
+        is_valid, error_msg = self._validate_xml_structure(cleaned_text)
+        if not is_valid and error_msg:
+            QMessageBox.warning(self, "格式错误", f"XML结构不合法: {error_msg}")
+            return
+
         try:
             # 解析XML
-            root = ET.fromstring(input_text)
+            root = ET.fromstring(cleaned_text)
             
             # 转换为字典
             data = self._xml_to_dict(root)
@@ -217,8 +342,29 @@ class XmlFormatter(BaseTool):
         # 获取元素标签名
         tag = element.tag
         
+        # 处理命名空间，只显示本地名称
+        if tag.startswith("{"):
+            # 提取命名空间中的本地名称
+            tag = tag.split("}")[1]
+        
         # 获取元素属性
-        attrs = ", ".join([f"{k}={v}" for k, v in element.attrib.items()]) if element.attrib else ""
+        attrs_list = []
+        # 遍历所有属性
+        for key, value in element.attrib.items():
+            # 检查是否为命名空间声明属性
+            if key.startswith("{http://www.w3.org/2000/xmlns/}"):
+                # ElementTree对命名空间声明的特殊表示，转换为标准格式
+                ns_prefix = key.split("}", 1)[1]  # 获取xmlns:之后的部分
+                attrs_list.append(f"xmlns:{ns_prefix}={value}")
+            elif key.startswith("xmlns"):
+                # 直接的xmlns属性
+                attrs_list.append(f"{key}={value}")
+            else:
+                # 普通属性
+                attrs_list.append(f"{key}={value}")
+        
+        # 将属性列表组合成字符串
+        attrs = ", ".join(attrs_list) if attrs_list else ""
         
         # 获取元素文本内容
         text = element.text.strip() if element.text else ""
@@ -295,8 +441,60 @@ class XmlFormatter(BaseTool):
             f"Element: {item.text(0)}\nAttributes: {item.text(1)}\nText: {item.text(2)}"))
         menu.addAction(copy_all_action)
         
+        # 添加复制节点及其子节点的选项
+        copy_node_tree_action = QAction("复制节点树", self)
+        copy_node_tree_action.triggered.connect(lambda: self.copy_node_tree(item))
+        menu.addAction(copy_node_tree_action)
+        
         # 显示菜单
         menu.exec_(QCursor.pos())
+
+    def copy_node_tree(self, item):
+        """
+        复制节点及其所有子节点的结构
+        """
+        def build_node_structure(item, level=0):
+            """
+            递归构建节点结构字符串
+            """
+            indent = "  " * level
+            element = item.text(0)
+            attributes = item.text(1)
+            text = item.text(2)
+            
+            # 构建当前节点的字符串表示
+            node_str = f"{indent}<{element}"
+            
+            # 添加属性（如果有）
+            if attributes:
+                node_str += f" {attributes}"
+                
+            # 检查是否有子节点
+            if item.childCount() > 0:
+                node_str += ">"
+                # 如果有文本内容，添加文本
+                if text:
+                    node_str += f"{text}"
+                    
+                # 递归添加子节点
+                for i in range(item.childCount()):
+                    child = item.child(i)
+                    node_str += f"\n{build_node_structure(child, level + 1)}"
+                    
+                # 添加结束标签
+                node_str += f"\n{indent}</{element}>"
+            else:
+                # 没有子节点，处理自闭合标签或带文本的标签
+                if text:
+                    node_str += f">{text}</{element}>"
+                else:
+                    node_str += "/>"
+                    
+            return node_str
+        
+        # 构建并复制节点树
+        node_tree_str = build_node_structure(item)
+        self.copy_to_clipboard(node_tree_str)
 
     def copy_to_clipboard(self, text):
         """
