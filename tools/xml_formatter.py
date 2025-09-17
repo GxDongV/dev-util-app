@@ -20,6 +20,36 @@ class XmlFormatter(BaseTool):
         self.original_input = None  # 保存原始输入
         self.is_converted_to_json = False  # 标记是否已转换为JSON
 
+    def _fix_line_breaks_in_tags(self, text):
+        """
+        修复标签内的换行问题，换行标签自动解析
+        """
+        if not text:
+            return text
+            
+        import re
+        # 采用分层处理策略，先修复标签结构再处理属性值
+        
+        # 1. 修复XML声明中的换行
+        text = re.sub(r'<\?xml([^\n>]*?)\n([^\n>]*?)\?>', r'<?xml\1 \2?>', text)
+        
+        # 2. 修复开始标签中的换行（如<ns:S013001010MIV02\n4>）
+        text = re.sub(r'<([^>]*?)\n([^>]*?)>', r'<\1\2>', text)
+        
+        # 3. 修复结束标签中的换行（如<\/ns:S013001010MIV02\n4>）
+        text = re.sub(r'<\/([^>]*?)\n([^>]*?)>', r'</\1\2>', text)
+        
+        # 4. 修复自闭合标签中的换行
+        text = re.sub(r'<([^>]*?)\n([^>]*?)/>', r'<\1\2/>', text)
+        
+        # 5. 修复属性值中的换行（双引号）
+        text = re.sub(r'(\w+="[^"]*?)\n([^"]*?")', r'\1 \2', text)
+        
+        # 6. 修复属性值中的换行（单引号）
+        text = re.sub(r"(\w+='[^']*?)\n([^']*?')", r'\1 \2', text)
+        
+        return text
+
     def _clean_xml_input(self, input_text):
         """
         清理XML输入文本，处理可能导致解析失败的问题
@@ -43,6 +73,9 @@ class XmlFormatter(BaseTool):
                 declaration = input_text[:decl_end+2]
                 # 重新组合文本，不修改编码声明
                 input_text = declaration + input_text[decl_end+2:]
+        
+        # 修复标签内的换行问题
+        input_text = self._fix_line_breaks_in_tags(input_text)
         
         # 修复命名空间中的空格问题
         import re
