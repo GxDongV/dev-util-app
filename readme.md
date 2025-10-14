@@ -57,10 +57,10 @@ python start_app.py
 以下是DevUtilsApp的界面预览图：
 
 ### 命名转换工具界面
-![命名转换工具](assets/image.png)
+![命名转换工具](image.png)
 
 ### 数字转换工具界面
-![数字转换工具](assets/image2.png)
+![数字转换工具](image2.png)
 
 ## 📤 打包与分发
 
