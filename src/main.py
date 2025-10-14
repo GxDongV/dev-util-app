@@ -20,7 +20,8 @@ def get_resource_path(relative_path):
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-if __name__ == "__main__":
+def run_app():
+    """运行应用程序的主函数"""
     # 全局异常处理配置
     # 将日志文件保存到用户文档目录，避免权限问题
     log_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'DevUtilsApp')
@@ -64,4 +65,7 @@ if __name__ == "__main__":
             pass
     
     window.show()
-    sys.exit(app.exec_())
+    return app.exec_()
+
+if __name__ == "__main__":
+    sys.exit(run_app())
