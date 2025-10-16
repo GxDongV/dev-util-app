@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         self.name_convert_btn = QPushButton("命名转换")
         self.json_format_btn = QPushButton("JSON格式转换")
         self.xml_format_btn = QPushButton("XML格式转换")
-        self.base64_converter_btn = QPushButton("Base64转换")
+        self.base64_converter_btn = QPushButton("编码转换")
         self.text_statistics_btn = QPushButton("文本统计")
         self.number_converter_btn = QPushButton("数字转换")
         # 添加按钮到侧边栏
