@@ -13,7 +13,7 @@ def build_exe(onefile=True):
     project_root = os.path.abspath(os.path.join(current_dir, '..'))
     dist_dir = os.path.join(project_root, 'dist')
     build_dir = os.path.join(project_root, 'build')
-    spec_file = os.path.join(project_root, 'main.spec')
+    spec_file = os.path.join(project_root, 'devUtilApp.spec')
 
     # 清理旧的构建文件
     if os.path.exists(dist_dir):
@@ -24,8 +24,6 @@ def build_exe(onefile=True):
         os.remove(spec_file)
 
     # 构建PyInstaller命令
-    # 获取项目根目录
-    project_root = os.path.abspath(os.path.join(current_dir, '..'))
 
     cmd = [
         "pyinstaller",
@@ -41,28 +39,26 @@ def build_exe(onefile=True):
         "--add-data", f"{os.path.join(project_root, 'tools')};tools",
         "--add-data", f"{os.path.join(project_root, 'assets')};assets",
         "--icon", f"{os.path.join(project_root, 'assets', 'app_icon.ico')}",
+        "--name", "devUtilApp",  # 设置输出文件名为devUtilApp
         f"{os.path.join(project_root, 'src', 'main.py')}"
     ]
 
     # 根据参数决定是否使用单文件模式
     if onefile:
         cmd.append("--onefile")  # 单文件打包
-    else:
-        # 多文件模式下，可以指定输出目录名称
-        cmd.extend(["--name", "main"])  # 设置输出文件名
 
-    print("开始单文件打包...")
+    print("开始打包...")
     print("执行命令:", " ".join(cmd))
 
     try:
         result = subprocess.run(cmd, cwd=project_root, check=True,
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                               text=True)
-        print("单文件打包成功!")
-        print(f"可执行文件位置: {os.path.join(dist_dir, 'main.exe') if onefile else os.path.join(dist_dir, 'main', 'main.exe')}")
+        print("打包成功!")
+        print(f"可执行文件位置: {os.path.join(dist_dir, 'devUtilApp.exe') if onefile else os.path.join(dist_dir, 'devUtilApp', 'devUtilApp.exe')}")
         return True
     except subprocess.CalledProcessError as e:
-        print("单文件打包失败:")
+        print("打包失败:")
         print("错误输出:", e.stderr)
         return False
     except FileNotFoundError:
@@ -168,9 +164,9 @@ def create_installer(installer_tool="inno", onefile=True):
     project_root = os.path.abspath(os.path.join(current_dir, '..'))
     dist_dir = os.path.join(project_root, 'dist')
     if onefile:
-        exe_path = os.path.join(dist_dir, 'main.exe')
+        exe_path = os.path.join(dist_dir, 'devUtilApp.exe')
     else:
-        exe_path = os.path.join(dist_dir, 'main', 'main.exe')
+        exe_path = os.path.join(dist_dir, 'devUtilApp', 'devUtilApp.exe')
     installer_output_dir = os.path.join(project_root, 'installer')
 
     # 检查单文件是否存在
@@ -211,23 +207,32 @@ def create_installer(installer_tool="inno", onefile=True):
             f.write(f"SetupIconFile={os.path.join(project_root, 'assets', 'app_icon.ico')}\n")
             f.write(f"Compression=lzma\n")
             f.write(f"SolidCompression=yes\n")
+            # 确保在安装完成页面显示选项框
+            f.write(f"ShowTasksTreeLines=no\n")
             f.write(f"[Files]\n")
             if onefile:
                 f.write(f"Source: \"{exe_path}\"; DestDir: \"{{app}}\"; Flags: ignoreversion\n")
                 # 复制assets文件夹
-                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
+                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
             else:
                 # 多文件模式需要复制整个目录
-                f.write(f"Source: \"{os.path.join(dist_dir, 'main')}\*\"; DestDir: \"{{app}}\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
+                f.write(f"Source: \"{os.path.join(dist_dir, 'devUtilApp')}\\*\"; DestDir: \"{{app}}\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
                 # 复制assets文件夹
-                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
-                f.write(f"[Icons]\n")
-                f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
-                f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\main.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
-                f.write(f"[Tasks]\n")
-                f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"; Flags: checked\n")
-                f.write(f"[Run]\n")
-                f.write(f"Filename: \"{{app}}\\main.exe\"; Description: \"Run DevUtilsApp\"; Flags: nowait postinstall skipifsilent\n")
+                f.write(f"Source: \"{os.path.join(project_root, 'assets')}\\*\"; DestDir: \"{{app}}\\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs\n")
+            
+            # 图标设置（无论单文件还是多文件模式都需要）
+            f.write(f"[Icons]\n")
+            f.write(f"Name: \"{{group}}\\DevUtilsApp\"; Filename: \"{{app}}\\devUtilApp.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"\n")
+            f.write(f"Name: \"{{commondesktop}}\\DevUtilsApp\"; Filename: \"{{app}}\\devUtilApp.exe\"; IconFilename: \"{{app}}\\assets\\app_icon.ico\"; Tasks: desktopicon\n")
+            
+            # 任务设置 - 添加桌面快捷方式和运行软件选项
+            f.write(f"[Tasks]\n")
+            f.write(f"Name: \"desktopicon\"; Description: \"Create desktop shortcut\"; GroupDescription: \"Additional tasks\"\n")
+            f.write(f"Name: \"launchprogram\"; Description: \"Run DevUtilsApp after installation\"; GroupDescription: \"Additional tasks\"\n")
+            
+            # 运行程序设置，与launchprogram任务关联
+            f.write(f"[Run]\n")
+            f.write(f"Filename: \"{{app}}\\devUtilApp.exe\"; Description: \"Run DevUtilsApp\"; Flags: nowait postinstall skipifsilent; Tasks: launchprogram\n")
 
         # 运行Inno Setup编译脚本
         try:
@@ -255,33 +260,89 @@ def create_installer(installer_tool="inno", onefile=True):
         # 创建NSIS脚本
         nsis_script = os.path.join(current_dir, '..', 'setup.nsi')
         with open(nsis_script, 'w', encoding='utf-8') as f:
-            f.write("OutFile '../installer\\DevUtilsApp_Setup.exe'\n")
+            # 包含所需的NSIS库以支持任务页面
+            f.write("!include MUI2.nsh\n")
+            
+            # 定义安装程序属性
+            output_file = os.path.join(installer_output_dir, 'DevUtilsApp_Setup.exe')
+            f.write(f"OutFile '{output_file.replace('/', '\\')}'\n")
             f.write("InstallDir '$PROGRAMFILES\\DevUtilsApp'\n")
-            f.write("Page Directory\n")
-            f.write("Page InstFiles\n")
+            
+            # 设置安装程序页面
+            f.write("!insertmacro MUI_PAGE_DIRECTORY\n")
+            f.write("!insertmacro MUI_PAGE_INSTFILES\n")
+            
+            # 定义完成页面并启用自定义任务
+            f.write("!define MUI_FINISHPAGE_RUN '$INSTDIR\\devUtilApp.exe'\n")
+
+            f.write("!define MUI_FINISHPAGE_SHOWREADME_CHECKED false\n")
+            f.write("!define MUI_FINISHPAGE_RUN_CHECKED true\n")
+            f.write("!define MUI_FINISHPAGE_RUN_TEXT 'Run DevUtilsApp'\n")
+            f.write("!insertmacro MUI_PAGE_FINISH\n")
+            
+            # 语言设置
+            f.write("!insertmacro MUI_LANGUAGE 'English'\n")
+            
+            # 定义安装部分
             f.write("Section 'MainSection' SEC01\n")
             f.write(f"  SetOutPath '$INSTDIR'\n")
             if onefile:
                 f.write(f"  File '{exe_path}'\n")
+            else:
+                # 多文件模式需要复制整个目录
+                f.write(f"  SetOutPath '$INSTDIR'\n")
+                f.write(f"  File /r '{os.path.join(dist_dir, 'devUtilApp')}\\*.*'\n")
             # 复制assets文件夹
             f.write(f"  CreateDirectory '$INSTDIR\\assets'\n")
             f.write(f"  SetOutPath '$INSTDIR\\assets'\n")
             f.write(f"  File /r '{os.path.join(project_root, 'assets')}\\*.*'\n")
+            
+            # 创建空的README文件以避免错误
+            f.write("  FileOpen $0 '$INSTDIR\\README.txt' w\n")
+            f.write("  FileClose $0\n")
+            
+            # 创建开始菜单快捷方式
+            f.write("  CreateDirectory '$SMPROGRAMS\\DevUtilsApp'\n")
+            f.write("  CreateShortcut '$SMPROGRAMS\\DevUtilsApp\\DevUtilsApp.lnk' '$INSTDIR\\devUtilApp.exe' '' '$INSTDIR\\assets\\app_icon.ico'\n")
             f.write("SectionEnd\n")
-            # 创建桌面快捷方式
-            f.write("Section 'Create Desktop Shortcut' SEC02\n")
-            f.write("  SectionIn RO\n")
-            f.write("  CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\main.exe' '' '$INSTDIR\\assets\\app_icon.ico'\n")
-            f.write("SectionEnd\n")
-        if not onefile:
-            # 多文件模式需要复制整个目录
-            f.write(f"  SetOutPath '$INSTDIR'\n")
-            f.write(f"  File /r '{os.path.join(dist_dir, 'main')}\\*.*'\n")
-            # 复制assets文件夹
-            f.write(f"  CreateDirectory '$INSTDIR\\assets'\n")
-            f.write(f"  SetOutPath '$INSTDIR\\assets'\n")
-            f.write(f"  File /r '{os.path.join(project_root, 'assets')}\\*.*'\n")
-            f.write("SectionEnd\n")
+            
+            # 创建桌面快捷方式部分（默认选中）
+            f.write("Var DesktopShortcut\n")
+            f.write("Function .onInit\n")
+            f.write("  StrCpy $DesktopShortcut 1\n")
+            f.write("FunctionEnd\n")
+            
+            # 添加自定义页面用于桌面快捷方式选项
+            f.write("Page custom CreateShortcutPage\n")
+            f.write("Function CreateShortcutPage\n")
+            f.write("  nsDialogs::Create 1018\n")
+            f.write("  Pop $0\n")
+            
+            # 创建标签
+            f.write("  ${NSD_CreateLabel} 0 0 100% 12u 'Select additional tasks:'\n")
+            f.write("  Pop $0\n")
+            
+            # 创建桌面快捷方式复选框（默认选中）
+            f.write("  ${NSD_CreateCheckBox} 0 24u 100% 12u 'Create desktop shortcut'\n")
+            f.write("  Pop $0\n")
+            f.write("  ${If} $DesktopShortcut == 1\n")
+            f.write("    ${NSD_Check} $0\n")
+            f.write("  ${EndIf}\n")
+            f.write("  ${NSD_OnClick} $0 OnDesktopShortcutClick\n")
+            
+            f.write("  nsDialogs::Show\n")
+            f.write("FunctionEnd\n")
+            
+            f.write("Function OnDesktopShortcutClick\n")
+            f.write("  ${NSD_GetState} $0 $DesktopShortcut\n")
+            f.write("FunctionEnd\n")
+            
+            # 安装完成后的回调
+            f.write("Function .onInstSuccess\n")
+            f.write("  ${If} $DesktopShortcut == 1\n")
+            f.write("    CreateShortcut '$DESKTOP\\DevUtilsApp.lnk' '$INSTDIR\\devUtilApp.exe' '' '$INSTDIR\\assets\\app_icon.ico'\n")
+            f.write("  ${EndIf}\n")
+            f.write("FunctionEnd\n")
 
         # 运行NSIS编译脚本
         try:
@@ -312,14 +373,6 @@ def build_with_installer(installer_tool="inno", build_exe_first=True, onefile=Tr
     return create_installer(installer_tool, onefile)
 
 if __name__ == "__main__":
-    # 测试工具路径检测
-    #test_installer_tools()
-    
-    # 构建单文件exe
-    build_exe(onefile=True)
-    
-    # 创建安装包，使用NSIS
-    create_installer(installer_tool="nsis", onefile=True)
-    # 默认为Inno Setup，也可以指定为'nsis'
-    # 如需禁用先构建exe，可设置build_exe_first=False
+    # 使用一站式构建函数创建安装包（默认使用Inno Setup）
+    # 如需使用NSIS，可修改为build_with_installer("nsis", build_exe_first=True, onefile=True)
     build_with_installer("inno", build_exe_first=True, onefile=True)

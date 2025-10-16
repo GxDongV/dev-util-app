@@ -66,44 +66,42 @@ python start_app.py
 
 ### 使用打包脚本（推荐）
 
-项目提供了两个打包脚本，分别用于单文件和多文件模式的打包：
+项目提供了两个打包脚本，用于不同的打包需求：
 
-#### 单文件模式打包
-执行以下命令生成单文件可执行程序和安装包：
+> **推荐使用Inno Setup构建安装包**：Inno Setup提供了更完善的安装体验，包括更好的桌面快捷方式支持和程序运行选项。
 
-```bash
-python scripts/build_installer.py
-```
-
-此脚本将执行以下操作：
-1. 使用PyInstaller将项目打包为单文件exe
-2. 自动创建安装包（支持Inno Setup和NSIS两种工具）
-3. 安装包输出到 `installer/DevUtilsApp_Setup.exe`
-
-#### 多文件模式打包
-执行以下命令生成多文件可执行程序和安装包：
+#### 交互式打包工具
+执行以下命令启动交互式打包工具，支持多种打包方式的选择：
 
 ```bash
 python scripts/build_multi_file_installer.py
 ```
 
-此脚本将执行以下操作：
-1. 使用PyInstaller将项目打包为多文件目录形式
-2. 自动创建Inno Setup安装包
-3. 安装包输出到 `installer/DevUtilsApp_Setup.exe`
+此脚本提供以下选项：
+1. 构建单文件可执行文件
+2. 构建多文件可执行文件
+3. 使用Inno Setup构建安装包（推荐）
+4. 使用NSIS构建安装包
 
+#### 传统打包脚本
+执行以下命令执行包脚本：
 
-如果你需要自定义打包选项，可以直接使用PyInstaller命令：
-
-#### 单文件模式
 ```bash
-pyinstaller --noconfirm --onefile --windowed --hidden-import=qdarkstyle --hidden-import=qdarkstyle.dark.palette --hidden-import=qdarkstyle.light.palette --hidden-import=qdarkstyle.dark.stylesheet --hidden-import=qdarkstyle.light.stylesheet --hidden-import=qdarkstyle.utils --add-data "ui;ui" --add-data "tools;tools" --add-data "assets;assets" --icon "assets/app_icon.ico" src/main.py
+python scripts/build_installer.py
 ```
 
-#### 多文件模式
-```bash
-pyinstaller --noconfirm --windowed --hidden-import=qdarkstyle --hidden-import=qdarkstyle.dark.palette --hidden-import=qdarkstyle.light.palette --hidden-import=qdarkstyle.dark.stylesheet --hidden-import=qdarkstyle.light.stylesheet --hidden-import=qdarkstyle.utils --add-data "ui;ui" --add-data "tools;tools" --add-data "assets;assets" --icon "assets/app_icon.ico" --name main src/main.py
-```
+### 安装包工具下载
+
+构建安装包需要安装以下工具：
+
+- **Inno Setup**：强大的Windows安装包创建工具
+  - 下载地址：[https://jrsoftware.org/isdl.php](https://jrsoftware.org/isdl.php)
+  - 推荐版本：6.5.4或更高
+
+- **NSIS (Nullsoft Scriptable Install System)**：轻量级安装包创建工具
+  - 下载地址：[https://nsis.sourceforge.io/Download](https://nsis.sourceforge.io/Download)
+  - 推荐使用最新稳定版本
+
 
 ## 📁 目录结构
 
