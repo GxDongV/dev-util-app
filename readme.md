@@ -64,6 +64,29 @@ python start_app.py
 
 ## 📤 打包与分发
 
+### 下载 Windows 发行版
+
+前往 [GitHub Releases](https://github.com/GxDongV/dev-util-app/releases/latest) 下载，支持 Windows 10/11 x64，无需安装 Python：
+
+| 文件 | 使用方式 |
+| --- | --- |
+| `DevUtilsApp-版本-windows-x64-single.exe` | 单文件版，下载后直接运行 |
+| `DevUtilsApp-版本-windows-x64-portable.zip` | 绿色版，完整解压后运行其中的 `DevUtilsApp.exe` |
+| `DevUtilsApp-版本-windows-x64-setup.exe` | 安装版，提供安装向导、快捷方式和卸载程序，默认安装到当前用户目录 |
+| `SHA256SUMS.txt` | 以上三个文件的 SHA-256 校验值 |
+
+### 一次构建全部发行文件
+
+在 Windows x64 环境安装项目依赖及 Inno Setup 6.3+ 后运行：
+
+```bash
+python scripts/build_release.py
+# 若未自动找到编译器：
+python scripts/build_release.py --iscc "C:/Program Files (x86)/Inno Setup 6/ISCC.exe"
+```
+
+输出位于 `release/`，版本号统一读取 `VERSION`。单文件与绿色版分别构建，不会互相覆盖。
+
 ### 使用打包脚本（推荐）
 
 项目提供了两个打包脚本，用于不同的打包需求：
@@ -172,7 +195,7 @@ dev-util-app/
 - **单文件vs多文件打包**：单文件模式分发更简单，但启动速度较慢；多文件模式启动速度更快，但分发相对复杂
 - **图标路径**：应用使用`assets`目录存放图标文件，不要将其移动到其他位置
 - **日志文件**：日志输出将显示在控制台，便于排查问题
-- **系统要求**：确保已安装Python 3.8或更高版本，以及项目所需的所有依赖
+- **系统要求**：发行版支持 Windows 10/11 x64，无需 Python；从源码运行时需先安装 Python 及项目依赖
 
 ## 🤝 贡献指南
 

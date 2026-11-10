@@ -169,3 +169,7 @@ view/
 
 # Cache folders
 .cache/
+
+# Release artifacts and local packaging tools
+release/
+installer/
